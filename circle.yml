@@ -1,3 +1,9 @@
 test:
   override:
     - pytest
+
+deployment:
+  staging:
+    branch: master
+    heroku:
+      appname: udrugazdravotrcanje
