@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>UZT Admin | Log in</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="/static/css/bootstrap.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/css/font-awesome.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="/static/css/ionicons.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/css/AdminLTE.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="/static/css/blue.css">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <b>Udruga Zdravo Trčanje Admin</b>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">Sign in to start your session</p>
+
+    <form>
+      <div id="username-group" class="form-group has-feedback">
+        <input type="text" class="form-control" id="username" placeholder="Username">
+        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        <span id="username-error" class="help-block username-error"></span>
+      </div>
+      <div id="password-group" class="form-group has-feedback">
+        <input type="password" class="form-control" id="password" placeholder="Password">
+        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        <span id="password-error" class="help-block"></span>
+      </div>
+      <div class="row">
+        <div class="col-xs-8">
+          <div class="checkbox icheck">
+            <label>
+              <input id="remember_me" type="checkbox"> Remember Me
+            </label>
+          </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-xs-4">
+          <button onclick="loginUser()" type="button" class="btn btn-primary btn-block btn-flat">Sign In</button>
+        </div>
+        <!-- /.col -->
+      </div>
+    </form>
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery 3 -->
+<script src="/static/js/jquery.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/static/js/bootstrap.js"></script>
+<!-- iCheck -->
+<script src="/static/js/icheck.js"></script>
+<script>
+  $(function () {
+    $('input').iCheck({
+      checkboxClass: 'icheckbox_square-blue',
+      radioClass: 'iradio_square-blue',
+      increaseArea: '20%' // optional
+    });
+  });
+</script>
+
+<script>
+  function loginUser(){
+    var username = $("#username").val();
+    var password = $("#password").val();
+    var remember_me = $(".icheckbox_square-blue").hasClass('checked');
+
+    if(!username || !password) return;
+
+    var data = {"username": username, "password": password, "remember_me": remember_me};
+    $.ajax({
+      method: 'POST',
+      contentType: 'application/json',
+      dataType: 'json',
+      data: JSON.stringify(data),
+      url: '/admin',
+      success: function(data){
+        localStorage.setItem('username', username);
+        localStorage.setItem('password', password);
+        window.location = '/dashboard';
+      }.bind(this),
+      error: function(xhr, status, err){
+        var response = JSON.parse(xhr.responseText);
+        for(var error in response){
+          $("#" + error + "-error").text(response[error]);
+          $("#" + error + "-group").attr('class', $("#" + error + "-group").attr('class') + ' has-error');
+        }
+      }.bind(this)
+    })
+  }
+</script>
+</body>
+</html>

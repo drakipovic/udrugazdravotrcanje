@@ -1,9 +1,15 @@
+import os
+os.environ['TEST'] = '1'
+
 from run import app
 
 app = app.test_client()
 
-def test_hello_in_home():
 
-    response = app.get('/')
+def test_get_dashboard_returns_dashboard_page():
 
-    assert 'Hello' in response.data
+    response = app.get('/dashboard')
+
+    assert response.status_code == 200
+
+    assert 'Udruga Zdravo' in response.data
