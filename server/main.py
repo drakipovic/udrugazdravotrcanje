@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 from flask_httpauth import HTTPBasicAuth
 
-from config import DevelopmentConfig, ProductionConfig, TestConfig
+from server.config import DevelopmentConfig, ProductionConfig, TestConfig
 
 
 app = Flask('server')
