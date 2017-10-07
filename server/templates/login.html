@@ -96,6 +96,7 @@
         window.location = '/dashboard';
       }.bind(this),
       error: function(xhr, status, err){
+        console.log(xhr, status);
         var response = JSON.parse(xhr.responseText);
         for(var error in response){
           $("#" + error + "-error").text(response[error]);
