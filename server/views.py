@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, jsonify, url_for, session, g
 
 from main import app
-from models import User
+from models import User, League
 
 
 @app.before_request
@@ -14,16 +14,14 @@ def _before_request():
     if 'static' in request.url:
         return
 
-    if 'admin' in request.url and request.method == 'GET':
+    if request.url.endswith('admin'):
         return
 
-    if 'logged_in' not in session and 'admin' not in request.url:
-        return redirect(url_for('login_admin'))
+    return redirect(url_for('login_admin'))
 
 
 @app.route('/admin', methods=['GET', 'POST'])
 def login_admin():
-    print request
     if request.method == 'POST':
         username = request.json.get('username')
         password = request.json.get('password')
@@ -54,9 +52,20 @@ def logout():
 
 
 @app.route('/')
-@app.route('/dashboard')
+@app.route('/admin/dashboard')
 def dashboard():
-    return render_template('dashboard.html', name=g.user.name, surname=g.user.surname)
+    return render_template('dashboard.html', user=g.user)
+
+
+@app.route('/admin/races')
+def races():
+    return render_template('races.html', user=g.user)
+
+
+@app.route('/admin/leagues')
+def leagues():
+    leagues = [dict(league) for league in League.query.all()]
+    return render_template('leagues.html', user=g.user, leagues=leagues)
 
 
 @app.errorhandler(404)

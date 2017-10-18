@@ -60,11 +60,11 @@
 <!-- /.login-box -->
 
 <!-- jQuery 3 -->
-<script src="/static/js/jquery.js"></script>
+<script src="/static/js/libs/jquery.js"></script>
 <!-- Bootstrap 3.3.7 -->
-<script src="/static/js/bootstrap.js"></script>
+<script src="/static/js/libs/bootstrap.js"></script>
 <!-- iCheck -->
-<script src="/static/js/icheck.js"></script>
+<script src="/static/js/libs/icheck.js"></script>
 <script>
   $(function () {
     $('input').iCheck({
@@ -93,7 +93,7 @@
       success: function(data){
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
-        window.location = '/dashboard';
+        window.location = '/admin/dashboard';
       }.bind(this),
       error: function(xhr, status, err){
         console.log(xhr, status);

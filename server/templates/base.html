@@ -39,13 +39,13 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="/static/img/avatar5.png" class="user-image" alt="User Image">
-                                <span id="name-navbar" class="hidden-xs">{{name}} {{surname}}</span>
+                                <span id="name-navbar" class="hidden-xs">{{user.name}} {{user.surname}}</span>
                             </a>
                             <ul class="dropdown-menu">
                             <!-- User image -->
                                 <li class="user-header">
                                     <img src="/static/img/avatar5.png" class="img-circle" alt="User Image">
-                                    <p id="name-dropdown">{{name}} {{surname}}</p>
+                                    <p id="name-dropdown">{{user.name}} {{user.surname}}</p>
                                 </li>
                                 <li class="user-footer">
                                     <div class="pull-left">
@@ -63,49 +63,59 @@
         </header>
         <aside class="main-sidebar">
                 <!-- sidebar: style can be found in sidebar.less -->
-                <section class="sidebar">
+            <section class="sidebar">
                   <!-- Sidebar user panel -->
-                  <div class="user-panel">
+                <div class="user-panel">
                     <div class="pull-left image">
-                      <img src="/static/img/avatar5.png" class="img-circle" alt="User Image">
+                        <img src="/static/img/avatar5.png" class="img-circle" alt="User Image">
                     </div>
                     <div class="pull-left info">
-                      <p id="name-sidebar">{{name}} {{surname}}</p>
+                        <p id="name-sidebar">{{user.name}} {{user.surname}}</p>
                     </div>
-                  </div>
+                </div>
                   <!-- search form -->
-                  <form action="#" method="get" class="sidebar-form">
+                <form action="#" method="get" class="sidebar-form">
                     <div class="input-group">
-                      <input type="text" name="q" class="form-control" placeholder="Search...">
-                      <span class="input-group-btn">
+                        <input type="text" name="q" class="form-control" placeholder="Search...">
+                        <span class="input-group-btn">
                             <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                              <i class="fa fa-search"></i>
+                                <i class="fa fa-search"></i>
                             </button>
-                          </span>
+                        </span>
                     </div>
-                  </form>
-                  <!-- /.search form -->
-                  <!-- sidebar menu: : style can be found in sidebar.less -->
-                  <ul class="sidebar-menu" data-widget="tree">
+                </form>
+                <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
                     
-                    <li><a href="/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-                    <li><a href="/races"><i class="fa fa-street-view"></i> <span>Races</span></a></li>                    
-                    <li><a href="/racers"><i class="fa fa-users"></i> <span>Racers</span></a></li>
+                    <li><a href="/admin/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+                    <li><a href="/admin/leagues"><i class="fa fa-trophy"></i> <span>Leagues</span></a></li>                    
+                    <li><a href="/admin/races"><i class="fa fa-street-view"></i> <span>Races</span></a></li>                    
                     
-                  </ul>
-                </section>
-                <!-- /.sidebar -->
-              </aside>
+                </ul>
+            </section>
+        </aside>
 
+        {% block content %}
+
+        {% endblock %}
+
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                  <b>Version</b> 0.0.0
+            </div>
+            <strong>Copyright &copy; 2017 <a href="https://drakipovic.github.io" target="_blank">Dino Rakipović</a>.</strong> All rights
+                reserved.
+        </footer>
 
     
-        <script src="/static/js/jquery.js"></script>
-        <!-- Bootstrap 3.3.7 -->
-        <script src="/static/js/bootstrap.js"></script>
-        <!-- AdminLTE App -->
-        <script src="/static/js/adminlte.js"></script>
+        <script src="/static/js/libs/jquery.js"></script>
+        <script src="/static/js/libs/bootstrap.js"></script>
+        <script src="/static/js/libs/adminlte.js"></script>
+        <script src="/static/js/custom/utils.js"></script>
         
+        {% block page_js %}
+            
+        {% endblock %}
 
 
     </body>
