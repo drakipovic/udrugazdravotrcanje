@@ -8,8 +8,11 @@ class LeaguesView(Resource):
 
     def post(self):
         data = request.get_json()
+        year = data['year']
+        name = data['name']
+        rounds = data['rounds']
         
-        league = League(data['year'], data['name'], data['rounds'])
+        league = League(year, name, rounds)
         league.save()
 
         return jsonify({"success": True, "league": dict(league)})

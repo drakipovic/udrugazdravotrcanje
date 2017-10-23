@@ -53,19 +53,26 @@ def logout():
 
 @app.route('/')
 @app.route('/admin/dashboard')
-def dashboard():
+def admin_dashboard():
     return render_template('dashboard.html', user=g.user)
 
 
 @app.route('/admin/races')
-def races():
+def admin_races():
     return render_template('races.html', user=g.user)
 
 
 @app.route('/admin/leagues')
-def leagues():
+def admin_leagues():
     leagues = [dict(league) for league in League.query.all()]
     return render_template('leagues.html', user=g.user, leagues=leagues)
+
+
+@app.route('/leagues/<int:league_id>')
+def league(league_id):
+    league = League.query.get(league_id)
+
+    return render_template('league.html', user=g.user, league=league)
 
 
 @app.errorhandler(404)
