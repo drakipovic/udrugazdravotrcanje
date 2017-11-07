@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, jsonify, url_for, session, g
 
 from main import app
-from models import User, League
+from models import User, League, Race
 
 
 # @app.before_request
@@ -62,11 +62,6 @@ def admin_dashboard():
     return render_template('dashboard.html', user=g.user)
 
 
-@app.route('/admin/races')
-def admin_races():
-    return render_template('races.html', user=g.user)
-
-
 @app.route('/admin/leagues')
 def admin_leagues():
     leagues = [dict(league) for league in League.query.all()]
@@ -74,10 +69,16 @@ def admin_leagues():
 
 
 @app.route('/admin/leagues/<int:league_id>')
-def league(league_id):
+def admin_league(league_id):
     league = League.query.get(league_id)
-
     return render_template('league.html', user=g.user, league=league)
+
+
+@app.route('/admin/races/<race_id>')
+def admin_race(race_id):
+    race = Race.query.get(race_id)
+
+    return render_template('race.html', user=g.user, race=race)
 
 
 @app.errorhandler(404)
