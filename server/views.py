@@ -4,20 +4,25 @@ from main import app
 from models import User, League
 
 
+# @app.before_request
+# def _before_request():
+#     if session.get('logged_in'):
+#         username = session['logged_in']
+#         g.user = User.query.filter_by(username=username).first()
+#         return
+    
+#     if 'static' in request.url:
+#         return
+
+#     if request.url.endswith('admin'):
+#         return
+
+#     return redirect(url_for('login_admin'))
+
+
 @app.before_request
 def _before_request():
-    if session.get('logged_in'):
-        username = session['logged_in']
-        g.user = User.query.filter_by(username=username).first()
-        return
-    
-    if 'static' in request.url:
-        return
-
-    if request.url.endswith('admin'):
-        return
-
-    return redirect(url_for('login_admin'))
+    g.user = User(username='dino', password='admin', name='Dino', surname='Rakipovic')
 
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -68,7 +73,7 @@ def admin_leagues():
     return render_template('leagues.html', user=g.user, leagues=leagues)
 
 
-@app.route('/leagues/<int:league_id>')
+@app.route('/admin/leagues/<int:league_id>')
 def league(league_id):
     league = League.query.get(league_id)
 

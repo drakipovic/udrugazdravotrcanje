@@ -1,3 +1,4 @@
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from main import db
@@ -42,7 +43,7 @@ class League(db.Model):
     rounds = db.Column(db.Integer)
     
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    created_by = db.relationship('User', backref='tasks')
+    created_by = db.relationship('User', backref='users')
 
     races = db.relationship('Race', backref='leagues', lazy='select', cascade='all, delete, delete-orphan')
 
@@ -58,7 +59,7 @@ class League(db.Model):
         yield 'year', self.year
         yield 'name', self.name
         yield 'rounds', self.rounds
-        yield 'created_by', self.created_by
+        yield 'created_by', self.created_by.username
     
     def save(self):
         db.session.add(self)
@@ -74,16 +75,25 @@ class Race(db.Model):
 
     race_id = db.Column(db.Integer, primary_key=True)
     league_round = db.Column(db.Integer)
+    league_year = db.Column(db.Integer)
+    finished = db.Column(db.Boolean)
+    start_time = db.Column(db.DateTime())
 
     league_id = db.Column(db.Integer, db.ForeignKey('leagues.league_id'))
 
-    def __init__(self, league_id, league_round):
-        self.league_id = league_id
+    def __init__(self, league_year, league_round, start_time=None, finished=False):
+        self.league_year = league_year
         self.league_round = league_round
+        self.finished = finished
+        self.start_time = start_time
 
     def __iter__(self):
         yield 'id', self.race_id
-    
+        yield 'round', self.league_round
+        yield 'year', self.league_year
+        yield 'finished', self.finished
+        yield 'start_time', datetime.strftime(self.start_time, "%d/%m/%Y %H:%M") if self.start_time else False
+
     def save(self):
         db.session.add(self)
         db.session.commit()
