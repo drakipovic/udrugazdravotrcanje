@@ -46,13 +46,15 @@ class League(db.Model):
     created_by = db.relationship('User', backref='users')
 
     races = db.relationship('Race', backref='leagues', lazy='select', cascade='all, delete, delete-orphan')
+    race_categories = db.relationship('RaceCategory', backref='leagues', lazy='select')
 
-    def __init__(self, year, name, rounds, created_by, races):
+    def __init__(self, year, name, rounds, created_by, races, race_categories):
         self.year = year
         self.name = name
         self.rounds = rounds
         self.created_by = created_by
         self.races = races
+        self.race_categories = race_categories
 
     def __iter__(self):
         yield 'id', self.league_id
@@ -102,3 +104,27 @@ class Race(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+
+
+class RaceCategory(db.Model):
+    __tablename__ = 'categories'
+
+    category_id = db.Column(db.Integer, primary_key=True)
+    race_length = db.Column(db.String(10))
+
+    league_id = db.Column(db.Integer, db.ForeignKey('leagues.league_id'))
+
+    def __init__(self, race_length):
+        self.race_length = race_length
+    
+    def __iter__(self):
+        yield 'id', self.category_id
+        yield 'length', self.race_length
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()

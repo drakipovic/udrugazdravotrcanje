@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import request, jsonify, g
 from flask_restful import Resource
 
-from models import League, Race
+from models import League, Race, RaceCategory
 
 
 class LeaguesView(Resource):
@@ -12,14 +12,16 @@ class LeaguesView(Resource):
         data = request.get_json()
         year = data['year']
         name = data['name']
-        rounds = data['rounds']
+        rounds = data['rounds'].replace('_', '')
+        categories = data['categories']
 
+        categories = [RaceCategory(race_length) for race_length in categories]            
         races = [Race(year, round) for round in range(int(rounds))]
 
         for race in races:
             race.save()
         
-        league = League(year, name, rounds, g.user, races)
+        league = League(year, name, rounds, g.user, races, categories)
         league.save()
 
         return jsonify({"success": True, "league": dict(league)})

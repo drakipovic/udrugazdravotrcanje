@@ -37,7 +37,7 @@
                                 {% for race in league.races %}
                                     {% set race = dict(race) %}
                                     <tr>
-                                        <td><a href="/races/{{race.id}}">Race {{race.round}}</a></td>
+                                        <td><a href="/races/{{race.id}}">Race {{race.round + 1}}</a></td>
                                         <td>-</td>
                                         <td>
                                             {% if race.start_time == False %}
@@ -102,9 +102,7 @@
         }
     }
 </script>
-<script src="/static/js/libs/jquery.inputmask.js"></script>
-<script src="/static/js/libs/jquery.inputmask.date.extensions.js"></script>
-<script src="/static/js/libs/jquery.inputmask.extensions.js"></script>
+
 <script>
 
     $("[id^='inputDatetime']").inputmask({

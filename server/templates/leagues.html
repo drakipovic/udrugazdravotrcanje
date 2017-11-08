@@ -129,6 +129,9 @@
     <script>
         $(document).ready(function() {
             $('#categoriesSelector').select2();
+
+            $("#leagueYear").inputmask("9999");
+            $("#leagueRounds").inputmask("9*");
         });
     </script>
     <script>
@@ -136,11 +139,15 @@
             var name = $("#leagueName").val();
             var year = $("#leagueYear").val();
             var rounds = $("#leagueRounds").val();
+            var categories = $("#categoriesSelector").val();
 
-            if(!name || !year || !rounds) return;
+            if(year.split('_').length-1 > 0) return;
+            if(rounds.split('_').length-1 > 1) return;
+            
+            if(!name || !year || !rounds || !categories) return;
 
-            var data = {"name": name, "year": year, "rounds": rounds};
-
+            var data = {"name": name, "year": year, "rounds": rounds, "categories": categories};
+            
             window.callApi({
                 method: 'POST',
                 url: '/api/leagues',
@@ -151,16 +158,20 @@
                     $("#leaguesTable > tbody").append(
                         "<tr>" + 
                             "<td>" + data['id'] + ".</td>" +
-                            "<td><a href=/leagues/" + data['id'] + ">" + data['name'] + "</a></td>" +
+                            "<td><a href=/admin/leagues/" + data['id'] + ">" + data['name'] + "</a></td>" +
                             "<td>" + data['year'] + "</td>" +
                             "<td align='center'><span class='badge bg-green'>" + data['rounds'] + "</span></td>" +
+                            "<td><span class='text-info glyphicon glyphicon-edit'/>" + "&nbsp;" + "<span class='text-danger glyphicon glyphicon-trash'/></td>" +
                         "</tr>"
                     );
 
                     $("#leagueForm").trigger("reset");
+                    $("#categoriesSelector").val('').trigger('change');
                 }.bind(this)
-            });
 
+                
+            });
+            
         }
     </script>
 
