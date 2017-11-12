@@ -77,8 +77,9 @@ def admin_league(league_id):
 @app.route('/admin/races/<race_id>')
 def admin_race(race_id):
     race = Race.query.get(race_id)
+    league = League.query.get(race.league_id)
 
-    return render_template('race.html', user=g.user, race=race)
+    return render_template('race.html', user=g.user, race=race, league=league)
 
 
 @app.errorhandler(404)

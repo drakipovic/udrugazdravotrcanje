@@ -37,7 +37,7 @@
                                 {% for race in league.races %}
                                     {% set race = dict(race) %}
                                     <tr>
-                                        <td><a href="/races/{{race.id}}">Race {{race.round + 1}}</a></td>
+                                        <td><a href="/admin/races/{{race.id}}">Race {{race.round + 1}}</a></td>
                                         <td>-</td>
                                         <td>
                                             {% if race.start_time == False %}

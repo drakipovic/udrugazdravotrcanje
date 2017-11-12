@@ -18,3 +18,7 @@ th{
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
     color: white !important;
 }
+
+.div-bordered{
+    border: 1px solid black;
+}
