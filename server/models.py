@@ -12,12 +12,18 @@ class User(db.Model):
     password_hash = db.Column(db.String(128))
     name = db.Column(db.String(50))
     surname = db.Column(db.String(50))
+    gender = db.Column(db.String(5))
+    age = db.Column(db.Integer)
 
-    def __init__(self, username, password, name, surname):
+    race_results = db.relationship('RaceResult', backref='user', lazy='select', cascade='all, delete, delete-orphan')
+
+    def __init__(self, username, password, name, surname, gender, age):
         self.username = username
         self.password_hash = self._set_password(password)
         self.name = name
         self.surname = surname
+        self.gender = gender
+        self.age = age
 
     def _set_password(self, password):
         return generate_password_hash(password)
@@ -43,7 +49,7 @@ class League(db.Model):
     rounds = db.Column(db.Integer)
     
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    created_by = db.relationship('User', backref='users')
+    created_by = db.relationship('User', backref='created_by')
 
     races = db.relationship('Race', backref='leagues', lazy='select', cascade='all, delete, delete-orphan')
     race_categories = db.relationship('RaceCategory', backref='leagues', lazy='select')
@@ -82,6 +88,8 @@ class Race(db.Model):
     start_time = db.Column(db.DateTime())
 
     league_id = db.Column(db.Integer, db.ForeignKey('leagues.league_id'))
+    race_results = db.relationship('RaceResult', backref='users', lazy='select', cascade='all, delete, delete-orphan')
+
 
     def __init__(self, league_year, league_round, start_time=None, finished=False):
         self.league_year = league_year
@@ -128,3 +136,30 @@ class RaceCategory(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+
+class RaceResult(db.Model):
+    __tablename__ = 'results'
+
+    race_result_id = db.Column(db.Integer, primary_key=True)
+    race_time = db.Column(db.Time())
+
+    race_id = db.Column(db.Integer, db.ForeignKey('races.race_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+
+    def __init__(self, race_time):
+        self.race_time = race_time
+    
+    def __iter__(self):
+        yield 'id', self.race_result_id
+        yield 'time', self.race_time.isoformat()
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+

@@ -22,7 +22,7 @@ from models import User, League, Race
 
 @app.before_request
 def _before_request():
-    g.user = User(username='dino', password='admin', name='Dino', surname='Rakipovic')
+    g.user = User(username='dino', password='admin', name='Dino', surname='Rakipovic', gender='M', age=23)
 
 
 @app.route('/admin', methods=['GET', 'POST'])
