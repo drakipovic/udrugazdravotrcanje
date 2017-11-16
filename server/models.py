@@ -52,7 +52,7 @@ class League(db.Model):
     created_by = db.relationship('User', backref='created_by')
 
     races = db.relationship('Race', backref='leagues', lazy='select', cascade='all, delete, delete-orphan')
-    race_categories = db.relationship('RaceCategory', backref='leagues', lazy='select')
+    race_categories = db.relationship('RaceCategory', backref='leagues', lazy='select', cascade='all, delete, delete-orphan')
 
     def __init__(self, year, name, rounds, created_by, races, race_categories):
         self.year = year
@@ -88,8 +88,7 @@ class Race(db.Model):
     start_time = db.Column(db.DateTime())
 
     league_id = db.Column(db.Integer, db.ForeignKey('leagues.league_id'))
-    race_results = db.relationship('RaceResult', backref='users', lazy='select', cascade='all, delete, delete-orphan')
-
+    race_results = db.relationship('RaceResult', backref='user_results', lazy='select', cascade='all, delete, delete-orphan')
 
     def __init__(self, league_year, league_round, start_time=None, finished=False):
         self.league_year = league_year
@@ -111,7 +110,6 @@ class Race(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
-
 
 
 class RaceCategory(db.Model):
@@ -143,16 +141,19 @@ class RaceResult(db.Model):
 
     race_result_id = db.Column(db.Integer, primary_key=True)
     race_time = db.Column(db.Time())
+    race_length = db.Column(db.String(10))
 
     race_id = db.Column(db.Integer, db.ForeignKey('races.race_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
-    def __init__(self, race_time):
+    def __init__(self, race_time=None, race_length=None):
         self.race_time = race_time
+        self.race_length = race_length
     
     def __iter__(self):
         yield 'id', self.race_result_id
-        yield 'time', self.race_time.isoformat()
+        yield 'time', self.race_time.isoformat() if self.race_time else 'DNF'
+        yield 'race_length', self.race_length
 
     def save(self):
         db.session.add(self)

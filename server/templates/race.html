@@ -24,17 +24,32 @@
 
     <section class="content">
         <div class="row">
-            <div class="col-sm-offset-7 col-sm-5">
+            <div class="col-sm-7">
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs pull-right">
+                        <li class="active"><a href="#tab_1-1" data-toggle="tab">Registered racers</a></li>
+                        <li><a href="#tab_2-2" data-toggle="tab">Results</a></li>
+                        
+                        <li class="pull-left header"><i class="fa fa-street-view"></i>Race overview</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-5">
                 <div class="box box-success">
                     <div class="box-header with-border text-center">
-                        <h3 class="box-title">Until race start</h3>
+                        <h3 class="box-title">
+                            {% if race.start_time != None %}
+                                Until race start
+                            {% else %}
+                                <div id="race_title" class="text-center text-danger">
+                                    Race start not set
+                                </div>
+                            {% endif %}
+                        </h3>
                     </div>
-                    <div class="box-body">
-                        {% if race.start_time != None %}
-                            <div id="raceStatus" class="text-center text-success" hidden>
-                                <h2 id="countdownText">Race started!</h2>
-                            </div>
-                            <div id="countdown">
+                    {% if race.start_time != None %}
+                        <div id="countdown">
+                            <div class="box-body">
                                 <div class="col-sm-4 text-center">
                                     <div class="div-bordered">
                                         <h3 id="days">-</h3>
@@ -54,12 +69,14 @@
                                     Minutes
                                 </div>
                             </div>
-                        {% else %}
-                            <div class="text-center text-danger">
-                                <h2 id="countdownText">Race time not set!</h2>
+                        </div>
+                        <div id="markFinished" class="text-center" hidden>
+                            <div class="box-body">
+                                <button onclick="markRaceFinished({{race.id}})" type="submit" class="btn btn-danger">Mark race finished <span class="glyphicon glyphicon-ok"/></span></button>
                             </div>
-                        {% endif %}
-                    </div>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </section>
@@ -79,7 +96,8 @@
 
             if(delta < 0){
                 $("#countdown").hide();
-                $("#raceStatus").show();
+                $("#markFinished").show();
+                $(".box-title").text("Race started");
                 clearInterval(x);
             }
 
@@ -98,5 +116,9 @@
         updateTimer();
         var x = setInterval(updateTimer, 1000 * 60);
 
+        function markRaceFinished(race_id){
+            $(".box-title").text("Race finished");
+            $("#markFinished").hide();
+        }
     </script>
 {% endblock %}
