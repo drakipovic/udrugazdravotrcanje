@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from main import db
@@ -13,23 +13,39 @@ class User(db.Model):
     name = db.Column(db.String(50))
     surname = db.Column(db.String(50))
     gender = db.Column(db.String(5))
-    age = db.Column(db.Integer)
+    birthdate = db.Column(db.Date())
+    role = db.Column(db.String(40))
+    approved = db.Column(db.Boolean)
 
     race_results = db.relationship('RaceResult', backref='user', lazy='select', cascade='all, delete, delete-orphan')
 
-    def __init__(self, username, password, name, surname, gender, age):
+    def __init__(self, username, password, name, surname, gender, birthdate, role='user', approved=False):
         self.username = username
         self.password_hash = self._set_password(password)
         self.name = name
         self.surname = surname
         self.gender = gender
-        self.age = age
+        self.birthdate = birthdate
+        self.role = role
+        self.approved = False
+
+    def __iter__(self):
+        yield 'username', self.username
+        yield 'full_name', "{} {}".format(self.name, self.surname)
+        yield 'gender', self.gender
+        yield 'age', self.age
+        yield 'role', self.role
+        yield 'approved', self.approved
 
     def _set_password(self, password):
         return generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    @property
+    def age(self):
+        return (date.today() - self.birthdate) / 365
     
     def save(self):
         db.session.add(self)
@@ -162,5 +178,3 @@ class RaceResult(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
-
-

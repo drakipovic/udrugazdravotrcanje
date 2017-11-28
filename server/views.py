@@ -1,3 +1,5 @@
+from datetime import date
+
 from flask import render_template, request, redirect, jsonify, url_for, session, g
 
 from main import app
@@ -22,11 +24,11 @@ from models import User, League, Race
 
 @app.before_request
 def _before_request():
-    g.user = User(username='dino', password='admin', name='Dino', surname='Rakipovic', gender='M', age=23)
+    g.user = User(username='dino', password='admin', name='Dino', surname='Rakipovic', gender='M', birthdate=date(1993, 12, 6))
 
 
-@app.route('/admin', methods=['GET', 'POST'])
-def login_admin():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     if request.method == 'POST':
         username = request.json.get('username')
         password = request.json.get('password')
@@ -43,9 +45,15 @@ def login_admin():
         if remember_me:
             session.permanent = True
 
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'user': dict(user)})
 
     return render_template('login.html')
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+
+    return render_template('register.html')
 
 
 @app.route('/logout')
