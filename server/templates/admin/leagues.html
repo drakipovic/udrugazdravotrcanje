@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block page_css %}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Leagues
+                <small>Preview and creation of leagues</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Leagues</li>
+
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-sm-7">
+                    <div class="box box-danger">
+                        <div class="box-header">
+                            <h3 class="box-title">Created leagues</h3>
+                        </div>
+                        <div class="box-body no-padding">
+                            <table id="leaguesTable" class="table table-bordered">
+                                <tr>
+                                    <th style="width: 7px">#</th>
+                                    <th>Name</th>
+                                    <th>Year</th>
+                                    <th>Rounds</th>
+                                    <th>Actions</th>
+                                </tr>
+                                {% for league in leagues %}
+                                    <tr>
+                                        <td>{{league.id}}.</td>
+                                        <td><a href="/admin/leagues/{{league.id}}">{{league.name}}</a></td>
+                                        <td>{{league.year}}</td>
+                                        <td align="center"><span class="badge bg-green">{{league.rounds}}</span></td>
+                                        <td>
+                                            <span class="text-info glyphicon glyphicon-edit"/>&nbsp;
+                                            <span class="text-danger glyphicon glyphicon-trash"/>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Add a league</h3>
+                        </div>
+                        <form id="leagueForm" class="form-horizontal">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Name</label>
+                
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-trophy"></i>
+                                            </div>
+                                            <input type="text" class="form-control" id="leagueName" placeholder="Name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Year</label>
+                                        
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar-times-o"></i>
+                                            </div>
+                                            <input type="text" class="form-control" id="leagueYear" placeholder="Start year">
+                                        </div>
+                                    </div>                                             
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Rounds</label>
+                
+                                    <div class="col-sm-9">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-th"></i>
+                                            </div>
+                                            <input type="text" id="leagueRounds" class="form-control" placeholder="Number of rounds">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                        <label class="col-sm-3 control-label">Categories</label>
+                    
+                                        <div class="col-sm-9">
+                                            <select id="categoriesSelector" name="categories[]" multiple="multiple" class="form-control" data-placeholder="Select race categories"
+                                            style="width: 100%;">
+                                                <option value="2.5">2.5km</option>
+                                                <option value="4.2">4.2km</option>
+                                                <option value="5">5km</option>
+                                                <option value="10">10km</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                            </div>                                    
+                            <div class="box-footer">
+                                <button onclick="addLeague()" type="button" class="btn btn-danger pull-right">Create</button>
+                            </div>                                   
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+{% endblock %}
+
+{% block page_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#categoriesSelector').select2();
+
+            $("#leagueYear").inputmask("9999");
+            $("#leagueRounds").inputmask("9*");
+        });
+    </script>
+    <script>
+        function addLeague(){
+            var name = $("#leagueName").val();
+            var year = $("#leagueYear").val();
+            var rounds = $("#leagueRounds").val();
+            var categories = $("#categoriesSelector").val();
+
+            if(year.split('_').length-1 > 0) return;
+            if(rounds.split('_').length-1 > 1) return;
+            
+            if(!name || !year || !rounds || !categories) return;
+
+            var data = {"name": name, "year": year, "rounds": rounds, "categories": categories};
+            
+            window.callApi({
+                method: 'POST',
+                url: '/api/leagues',
+                data: JSON.stringify(data),
+                success: function(data){
+                    var data = data["league"];
+
+                    $("#leaguesTable > tbody").append(
+                        "<tr>" + 
+                            "<td>" + data['id'] + ".</td>" +
+                            "<td><a href=/admin/leagues/" + data['id'] + ">" + data['name'] + "</a></td>" +
+                            "<td>" + data['year'] + "</td>" +
+                            "<td align='center'><span class='badge bg-green'>" + data['rounds'] + "</span></td>" +
+                            "<td><span class='text-info glyphicon glyphicon-edit'/>" + "&nbsp;" + "<span class='text-danger glyphicon glyphicon-trash'/></td>" +
+                        "</tr>"
+                    );
+
+                    $("#leagueForm").trigger("reset");
+                    $("#categoriesSelector").val('').trigger('change');
+                }.bind(this)
+
+                
+            });
+            
+        }
+    </script>
+
+{% endblock %}
