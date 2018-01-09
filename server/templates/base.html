@@ -1,24 +1,29 @@
 <html>
     <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <title>Udruga Zdravo Trčanje Admin</title>
-      <!-- Tell the browser to be responsive to screen width -->
-      <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-      <!-- Bootstrap 3.3.7 -->
-      <link rel="stylesheet" href="/static/css/bootstrap.css">
-      <!-- Font Awesome -->
-      <link rel="stylesheet" href="/static/css/font-awesome.css">
-      <!-- Ionicons -->
-      <link rel="stylesheet" href="/static/css/ionicons.css">
-      <!-- Theme style -->
-      <link rel="stylesheet" href="/static/css/AdminLTE.css">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Udruga Zdravo Trčanje Admin</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        
+        <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
+        <link rel="manifest" href="/static/manifest.json">
+        <link rel="mask-icon" href="/static/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="theme-color" content="#ffffff">
 
-      <link rel="stylesheet" href="/static/css/skins/skin-red-light.css">
+        <link rel="stylesheet" href="/static/css/bootstrap.css">
+        <link rel="stylesheet" href="/static/css/font-awesome.css">
+        <link rel="stylesheet" href="/static/css/AdminLTE.css">
+        <link rel="stylesheet" href="/static/css/skins/skin-red-light.css">
+        <link rel="stylesheet" href="/static/css/dataTables.bootstrap.css">
+        <link rel="stylesheet" href="/static/css/easy-autocomplete.css">
+        <link rel="stylesheet" href="/static/css/easy-autocomplete.themes.css">
 
-      <link rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-      <link rel="stylesheet" href="/static/css/custom.css">
+        <link rel="stylesheet"
+                href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+        <link rel="stylesheet" href="/static/css/custom.css">
             
         {% block page_css %}
 
@@ -43,13 +48,13 @@
                     <ul class="nav navbar-nav">
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="/static/img/avatar5.png" class="user-image" alt="User Image">
+                                <img src="{{user.avatar_url}}" class="user-image" alt="User Image">
                                 <span id="name-navbar" class="hidden-xs">{{user.name}} {{user.surname}}</span>
                             </a>
                             <ul class="dropdown-menu">
                             <!-- User image -->
                                 <li class="user-header">
-                                    <img src="/static/img/avatar5.png" class="img-circle" alt="User Image">
+                                    <img src="{{user.avatar_url}}" class="img-circle" alt="User Image">
                                     <p id="name-dropdown">{{user.name}} {{user.surname}}</p>
                                 </li>
                                 <li class="user-footer">
@@ -67,18 +72,16 @@
             </nav>
         </header>
         <aside class="main-sidebar">
-            <!-- sidebar: style can be found in sidebar.less -->
             <section class="sidebar">
-                <!-- Sidebar user panel -->
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="/static/img/avatar5.png" class="img-circle" alt="User Image">
+                        <img src="{{user.avatar_url}}" class="img-circle" alt="User Image">
                     </div>
                     <div class="pull-left info">
                         <p id="name-sidebar">{{user.name}} {{user.surname}}</p>
+                        <a href="/"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
                 </div>
-                <!-- search form -->
                 <form action="#" method="get" class="sidebar-form">
                     <div class="input-group">
                         <input type="text" name="q" class="form-control" placeholder="Search...">
@@ -89,13 +92,29 @@
                         </span>
                     </div>
                 </form>
+                {% if user.role == 'admin' %}
+                    <ul class="sidebar-menu" data-widget="tree">
+                        <li class="header">ADMIN TOOLS</li>
+                        
+                        <li><a href="/admin/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+                        <li><a href="/admin/leagues"><i class="fa fa-trophy"></i> <span>Leagues</span></a></li>                    
+                        <li><a href="/admin/users">
+                            <i class="fa fa-users"></i> <span>Users</span>
+                            <span class="pull-right-container">
+                                <span class="label label-success pull-right">0</span>
+                            </span>
+                        </a></li>                    
+
+                    </ul>
+                {% endif %}
                 <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">ADMIN TOOLS</li>
+                    <li class="header">MAIN NAVIGATION</li>
                     
-                    <li><a href="/admin/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-                    <li><a href="/admin/leagues"><i class="fa fa-trophy"></i> <span>Leagues</span></a></li>                    
+                    <li><a href="/profile"><i class="fa fa-user"></i> <span>Profile</span></a></li>
+                    <li><a href="/races"><i class="fa fa-road"></i> <span>Races</span></a></li>
                     
                 </ul>
+
             </section>
         </aside>
 
@@ -107,7 +126,7 @@
             <div class="pull-right hidden-xs">
                   <b>Version</b> 0.0.0
             </div>
-            <strong>Copyright &copy; 2017 <a href="https://drakipovic.github.io" target="_blank">Dino Rakipović</a>.</strong> All rights
+            <strong>Copyright &copy; 2017-2018 <a href="https://drakipovic.github.io" target="_blank">Dino Rakipović</a>.</strong> All rights
                 reserved.
         </footer>
 
@@ -118,6 +137,9 @@
         <script src="/static/js/libs/jquery.inputmask.js"></script>
         <script src="/static/js/libs/jquery.inputmask.date.extensions.js"></script>
         <script src="/static/js/libs/jquery.inputmask.extensions.js"></script>
+        <script src="/static/js/libs/jquery.easy-autocomplete.js"></script>
+        <script src="/static/js/libs/jquery.dataTables.js"></script>
+        <script src="/static/js/libs/dataTables.bootstrap.js"></script>
         <script src="/static/js/custom/utils.js"></script>
         
         {% block page_js %}

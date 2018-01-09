@@ -2,87 +2,133 @@
 
 {% block content %}
 
-<div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            {{race.league_round + 1}}. race from {{league.name}} {{league.year}}
-            {% if race.start_time != None %}
-                <small>Starts on {{race.start_time}}</small>
-            {% else %}
-                <small class="text-danger">Race start not set!</small>
-            {% endif %}
+    <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                {{race.league_round + 1}}. race from {{league.name}} {{league.year}}
+                {% if race.start_time != None and not race.finished  %}
+                    <small>Starts on {{race.start_time}}</small>
+                {% elif race.finished %}
+                    <small>Race finished.</small>
+                {% else %}
+                    <small class="text-danger">Race start not yet set!</small>
+                {% endif %}
 
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="/admin/leagues/"><i class="fa fa-trophy"></i> Leagues</a></li>
-            <li><a href="/admin/leagues/{{race.league_id}}">League</a></li>
-            <li class="active">Race</li>
-        </ol>
-    </section>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/profile"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li><a href="/leagues/"><i class="fa fa-trophy"></i> Leagues</a></li>
+                <li><a href="/leagues/{{race.league_id}}">League</a></li>
+                <li class="active">Race</li>
+            </ol>
+        </section>
 
-    <section class="content">
-        <div class="row">
-            <div class="col-sm-7">
-                <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs pull-right">
-                        <li class="active"><a href="#tab_1-1" data-toggle="tab">Registered racers</a></li>
-                        <li><a href="#tab_2-2" data-toggle="tab">Results</a></li>
-                        
-                        <li class="pull-left header"><i class="fa fa-street-view"></i>Race overview</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <div class="box box-success">
-                    <div class="box-header with-border text-center">
-                        <h3 class="box-title">
-                            {% if race.start_time != None %}
-                                Until race start
+        <section class="content">
+            <div class="container-fluid">
+                {% if not race.finished %}
+                    <div class="row">   
+                        <div class="col-xs-7 col-sm-offset-1 col-sm-6">
+                            <div id="countdown">
+                                <div class="box box-danger">
+                                    <div class="box-header with-border text-center">
+                                        <h3 class="box-title">
+                                            Until race start
+                                        </h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="col-xs-3 col-sm-3 text-center">
+                                            <div class="div-bordered">
+                                                <h3 id="days">-</h3>
+                                            </div>
+                                            Days
+                                        </div>
+                                        <div class="col-xs-3 col-sm-3 text-center">
+                                            <div class="div-bordered">
+                                                <h3 id="hours">-</h3>
+                                            </div>
+                                            Hours
+                                        </div>
+                                        <div class="col-xs-3 col-sm-3 text-center">
+                                            <div class="div-bordered">
+                                                <h3 id="minutes">-</h3>
+                                            </div>
+                                            Minutes
+                                        </div>
+                                        <div class="col-xs-3 col-sm-3 text-center">
+                                            <div class="div-bordered">
+                                                <h3 id="seconds">-</h3>
+                                            </div>
+                                            Seconds
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-5 col-sm-offset-1 col-sm-3">
+                            {% if not my_result %}
+                                <div id="register">
+                                    <div class="form-group">
+                                        <select id="category" class="form-control">
+                                            <option disabled selected>Choose race category</option>
+                                            {% for category in league.race_categories %}
+                                                <option value="{{category.race_length}}">{{category.race_length}} km</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="text-center">
+                                        <button onclick="registerForRace()" type="submit" class="btn btn-flat btn-success">Register for race</button>
+                                    </div>
+                                </div>
                             {% else %}
-                                <div id="race_title" class="text-center text-danger">
-                                    Race start not set
+                                <div id="start-number">
+                                    <div class="small-box bg-red">
+                                        <div class="inner">
+                                            <h3>{{my_result.start_number}}</h3>
+                            
+                                            <p>My Starting Number</p>
+                                        </div>
+                                    </div>
                                 </div>
                             {% endif %}
-                        </h3>
+                            <div id="start-number" hidden>
+                                <div class="small-box bg-red">
+                                    <div class="inner">
+                                        <h3 id="number"></h3>
+                        
+                                        <p>My Starting Number</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    {% if race.start_time != None %}
-                        <div id="countdown">
+                {% endif %}
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                        <div class="box box-danger">
+                            <div class="box-header">
+                                <h3 class="box-title">Results</h3>
+                            </div>
                             <div class="box-body">
-                                <div class="col-sm-4 text-center">
-                                    <div class="div-bordered">
-                                        <h3 id="days">-</h3>
-                                    </div>
-                                    Days
-                                </div>
-                                <div class="col-sm-4 text-center">
-                                    <div class="div-bordered">
-                                        <h3 id="hours">-</h3>
-                                    </div>
-                                    Hours
-                                </div>
-                                <div class="col-sm-4 text-center">
-                                    <div class="div-bordered">
-                                        <h3 id="minutes">-</h3>
-                                    </div>
-                                    Minutes
-                                </div>
+                                <table id="resultsTable" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Position</th>
+                                            <th>Name</th>
+                                            <th>Time</th>
+                                            <th>Category</th>
+                                            <th>Start Number</th>
+                                        </tr>
+                                    </thead>
+                                    
+                                </table>
                             </div>
                         </div>
-                        <div id="markFinished" class="text-center" hidden>
-                            <div class="box-body">
-                                <button onclick="markRaceFinished({{race.id}})" type="submit" class="btn btn-danger">Mark race finished <span class="glyphicon glyphicon-ok"/></span></button>
-                            </div>
-                        </div>
-                    {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-
-</div>
+        </section>
+    </div>
 
 {% endblock %}
 
@@ -94,31 +140,71 @@
             var timeNow = new Date().getTime();
             var delta = startDate - timeNow;
 
-            if(delta < 0){
-                $("#countdown").hide();
-                $("#markFinished").show();
-                $(".box-title").text("Race started");
+            if(delta <= 0){
                 clearInterval(x);
+                $("#days").html(0);
+                $("#hours").html(0);
+                $("#minutes").html(0);
+                $("#seconds").html(0);
+                return;
             }
 
             var days = Math.floor(delta / (1000 * 60 * 60 * 24));
             var hours = Math.floor((delta % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             var minutes = Math.floor((delta % (1000 * 60 * 60)) / (1000 * 60));
-            console.log(days);
+            var seconds = Math.floor((delta % (1000 * 60)) / 1000);
+
             $("#days").html(days);
             $("#hours").html(hours);
             $("#minutes").html(minutes);
+            $("#seconds").html(seconds);
 
-
-            console.log(delta);
         }
 
         updateTimer();
-        var x = setInterval(updateTimer, 1000 * 60);
+        var x = setInterval(updateTimer, 1000);
+    </script>
 
-        function markRaceFinished(race_id){
-            $(".box-title").text("Race finished");
-            $("#markFinished").hide();
+    <script>
+        function registerForRace(){
+            var len = $("#category").val();
+            if(!len) return;
+
+            var race_id = parseInt("{{race.race_id}}", 10);
+            var user_id = parseInt("{{user.user_id}}", 10);
+
+            var data = {"user_id": user_id, "race_length": len};
+            window.callApi({
+                url: "/api/race-results/" + race_id,
+                method: "POST",
+                data: JSON.stringify(data),
+                success: function(data){
+                    console.log(data);
+                    $("#register").hide();
+                    $("#start-number").show();
+                    $("#number").html(data['race_result']['start_number']);
+                    $('#resultsTable').DataTable().ajax.reload();
+                }
+            })
         }
+    </script>
+    <script>
+        $(function () {
+            $('#resultsTable').DataTable({
+                'ordering': false,
+                'ajax': {
+                    'url': '/api/race-results/{{race.race_id}}',
+                    'cache': true,
+                    'dataSrc': ''
+                },
+                'columns': [
+                    {"data": "position"},
+                    {"data": "full_name"},
+                    {"data": "time"},
+                    {"data": "race_length"},
+                    {"data": "start_number"},
+                ]
+            });
+        });
     </script>
 {% endblock %}

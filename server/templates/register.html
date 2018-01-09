@@ -45,6 +45,11 @@
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
         <span id="password-again-error" class="help-block"></span>
       </div>
+      <div id="email-group" class="form-group has-feedback">
+        <input type="text" class="form-control" id="email" placeholder="Email">
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        <span id="email-error" class="help-block email-error"></span>
+      </div>
       <div id="name-group" class="form-group has-feedback">
         <input type="text" class="form-control" id="name" placeholder="Name">
         <span class="fa fa-address-book form-control-feedback"></span>
@@ -55,7 +60,7 @@
         <span class="fa fa-address-card form-control-feedback"></span>
         <span id="surname-error" class="help-block"></span>
       </div>
-      <div class="form-group has-feedback">
+      <div id="gender-group" class="form-group has-feedback">
         <select id="gender" class="form-control">
           <option disabled selected="selected">Gender</option>
           <option value="M">Male</option>
@@ -64,12 +69,13 @@
         <span id="gender-error" class="help-block"></span>
       </div>
  
-      <div class="form-group has-feedback">
+      <div id="birthdate-group" class="form-group has-feedback">
         <div class="input-group">
+            
+            <input type="text" id="birthdate" class="form-control" placeholder="Birthdate" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
             <div class="input-group-addon">
-                <i class="fa fa-calendar"></i>
-            </div>
-            <input type="text" id="datemask" class="form-control" placeholder="Birthdate" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+              <i class="fa fa-calendar"></i>
+          </div>
         </div>
         <span id="birthdate-error" class="help-block"></span>
       </div>
@@ -89,33 +95,54 @@
 <script src="/static/js/libs/jquery.inputmask.extensions.js"></script>
 
 <script>
-    $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    $('#birthdate').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
         
 
     function registerUser(){
+        ids = ['password', 'password-again', 'username', 'email', 'name', 'surname', 'gender', 'birthdate']
+        for(var i=0; i < ids.length; ++i){
+          
+          $("#"+ids[i]+"-error").text('');
+          $("#" +ids[i]+ "-group").removeClass('has-error');
+        }
         var username = $("#username").val();
         var password = $("#password").val();
+        var passwordAgain = $("#password-again").val();
+        var email = $("#email").val();
+        var name = $("#name").val();
+        var surname = $("#surname").val();
+        var gender = $("#gender").val();
+        var birthdate = $("#birthdate").val();
 
-        if(!username || !password) return;
+        console.log(username, password, passwordAgain, email, name, surname, gender, birthdate);
 
-        var data = {"username": username, "password": password, "remember_me": remember_me};
+        if(password != passwordAgain){
+          $("#password-again-error").text('Passwords must match!');
+          $("#password-again-group").attr('class', $("#password-again-group").attr('class') + ' has-error');
+          return;
+        }
+
+        var data = {"username": username, "password": password, "email": email, "name": name,
+                    "surname": surname, "gender": gender, "birthdate": birthdate};
+        
         $.ajax({
             method: 'POST',
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify(data),
-            url: '/admin',
+            url: '/register',
             success: function(data){
-                localStorage.setItem('username', username);
-                localStorage.setItem('password', password);
-                window.location = '/admin/dashboard';
+                window.location = '/login'
             }.bind(this),
             error: function(xhr, status, err){
-                console.log(xhr, status);
                 var response = JSON.parse(xhr.responseText);
-                for(var error in response){
-                $("#" + error + "-error").text(response[error]);
-                $("#" + error + "-group").attr('class', $("#" + error + "-group").attr('class') + ' has-error');
+                console.log(response)
+                for(var i in response['errors']){
+                  error = response['errors'][i];
+                  for(var e in error){
+                    $("#" + e + "-error").text(error[e]);
+                    $("#" + e + "-group").attr('class', $("#" + e + "-group").attr('class') + ' has-error');
+                  }
                 }
             }.bind(this)
         })

@@ -77,11 +77,16 @@
 
 <script>
   function loginUser(){
+    ids = ['password','username']
+    for(var i=0; i < ids.length; ++i){
+      
+      $("#"+ids[i]+"-error").text('');
+      $("#" +ids[i]+ "-group").removeClass('has-error');
+    }
     var username = $("#username").val();
     var password = $("#password").val();
     var remember_me = $(".icheckbox_square-blue").hasClass('checked');
 
-    if(!username || !password) return;
 
     var data = {"username": username, "password": password, "remember_me": remember_me};
     $.ajax({
@@ -89,7 +94,7 @@
       contentType: 'application/json',
       dataType: 'json',
       data: JSON.stringify(data),
-      url: '/admin',
+      url: '/login',
       success: function(data){
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
