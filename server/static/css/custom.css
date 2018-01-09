@@ -21,4 +21,52 @@ th{
 
 .div-bordered{
     border: 1px solid black;
+    padding-top: -15px;
+    padding-bottom: -10px;
+}
+
+.easy-autocomplete.eac-square input{
+    padding: 6px 12px !important;
+    font-size: 14px !important;
+    min-width: 0 !important;
+    border: 1px solid #ccc;
+    font-style: normal;
+}
+
+.well{
+    border-radius: 0px;
+    background-color: white;
+    margin-bottom: 0px;
+    border: 1px solid #ddd;
+}
+.col-mid{
+    text-align: center;
+}
+
+.col-content{
+    text-align: center;
+    border-right: 1px solid black;
+}
+
+.decorated{
+    overflow: hidden;
+    text-align: center;
+}
+.decorated > span{
+   position: relative;
+   display: inline-block;
+}
+.decorated > span:before, .decorated > span:after{
+   content: '';
+   position: absolute;
+   top: 50%;
+   border-bottom: 2px solid;
+   width: 592px; /* half of limiter */
+   margin: 0 20px;
+}
+.decorated > span:before{
+   right: 100%;
+}
+.decorated > span:after{
+   left: 100%;
 }
