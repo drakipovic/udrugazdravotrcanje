@@ -1,37 +1,67 @@
 from datetime import datetime, date
+from random import randint
+
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.types import TypeDecorator, Unicode, UnicodeText
 
 from main import db
+
+class CoerceUTF8(TypeDecorator):
+    """Safely coerce Python bytestrings to Unicode
+    before passing off to the database."""
+
+    impl = Unicode
+
+    def process_bind_param(self, value, dialect):
+        if isinstance(value, str):
+            value = value.decode('utf-8')
+        return value
+
+
+class CoerceUTF8Text(TypeDecorator):
+    """Safely coerce Python bytestrings to Unicode
+    before passing off to the database."""
+
+    impl = UnicodeText
+
+    def process_bind_param(self, value, dialect):
+        if isinstance(value, str):
+            value = value.decode('utf-8')
+        return value
 
 
 class User(db.Model):
     __tablename__ = 'users'
 
     user_id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(32), index=True)
-    password_hash = db.Column(db.String(128))
-    name = db.Column(db.String(50))
-    surname = db.Column(db.String(50))
-    gender = db.Column(db.String(5))
+    username = db.Column(CoerceUTF8(32), index=True)
+    password_hash = db.Column(CoerceUTF8(128))
+    email = db.Column(CoerceUTF8(100))
+    name = db.Column(CoerceUTF8(50))
+    surname = db.Column(CoerceUTF8(50))
+    gender = db.Column(CoerceUTF8(5))
     birthdate = db.Column(db.Date())
-    role = db.Column(db.String(40))
+    role = db.Column(CoerceUTF8(40))
     approved = db.Column(db.Boolean)
+    avatar_url = db.Column(CoerceUTF8(100))
 
     race_results = db.relationship('RaceResult', backref='user', lazy='select', cascade='all, delete, delete-orphan')
 
-    def __init__(self, username, password, name, surname, gender, birthdate, role='user', approved=False):
+    def __init__(self, username, password, email, name, surname, gender, birthdate, role='user', approved=False):
         self.username = username
         self.password_hash = self._set_password(password)
+        self.email = email
         self.name = name
         self.surname = surname
         self.gender = gender
         self.birthdate = birthdate
         self.role = role
-        self.approved = False
+        self.approved = approved
+        self.avatar_url = '/static/img/profile/{}/{}.png'.format(self.gender, randint(0, 2)) 
 
     def __iter__(self):
         yield 'username', self.username
-        yield 'full_name', "{} {}".format(self.name, self.surname)
+        yield 'full_name', self.full_name
         yield 'gender', self.gender
         yield 'age', self.age
         yield 'role', self.role
@@ -45,8 +75,12 @@ class User(db.Model):
 
     @property
     def age(self):
-        return (date.today() - self.birthdate) / 365
+        return (date.today() - self.birthdate).days / 365
     
+    @property
+    def full_name(self):
+        return "{} {}".format(self.name.encode('utf-8'), self.surname.encode('utf-8'))
+
     def save(self):
         db.session.add(self)
         db.session.commit()
@@ -61,7 +95,7 @@ class League(db.Model):
 
     league_id = db.Column(db.Integer, primary_key=True)
     year = db.Column(db.Integer)
-    name = db.Column(db.String(1500))
+    name = db.Column(CoerceUTF8(1500))
     rounds = db.Column(db.Integer)
     
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
@@ -110,7 +144,7 @@ class Race(db.Model):
         self.league_year = league_year
         self.league_round = league_round
         self.finished = finished
-        self.start_time = start_time
+        self.start_time = datetime.strptime(start_time, '%d-%m-%Y %H:%M') if start_time else start_time
 
     def __iter__(self):
         yield 'id', self.race_id
@@ -132,7 +166,7 @@ class RaceCategory(db.Model):
     __tablename__ = 'categories'
 
     category_id = db.Column(db.Integer, primary_key=True)
-    race_length = db.Column(db.String(10))
+    race_length = db.Column(CoerceUTF8(10))
 
     league_id = db.Column(db.Integer, db.ForeignKey('leagues.league_id'))
 
@@ -157,19 +191,27 @@ class RaceResult(db.Model):
 
     race_result_id = db.Column(db.Integer, primary_key=True)
     race_time = db.Column(db.Time())
-    race_length = db.Column(db.String(10))
+    race_length = db.Column(CoerceUTF8(10))
+    start_number = db.Column(db.Integer)
 
     race_id = db.Column(db.Integer, db.ForeignKey('races.race_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
-    def __init__(self, race_time=None, race_length=None):
+    def __init__(self, user_id, race_id, race_time=None, race_length=None):
         self.race_time = race_time
         self.race_length = race_length
+        self.race_id = race_id
+        self.user_id = user_id
+        self.start_number = len(Race.query.get(race_id).race_results) + 1
     
     def __iter__(self):
         yield 'id', self.race_result_id
-        yield 'time', self.race_time.isoformat() if self.race_time else 'DNF'
+        yield 'position', '-'
+        yield 'race_id', self.race_id
+        yield 'time', self.race_time.isoformat() if self.race_time else '-'
         yield 'race_length', self.race_length
+        yield 'start_number', self.start_number
+        yield 'full_name', User.query.get(self.user_id).full_name
 
     def save(self):
         db.session.add(self)
