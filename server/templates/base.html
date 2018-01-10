@@ -48,14 +48,14 @@
                     <ul class="nav navbar-nav">
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="{{user.avatar_url}}" class="user-image" alt="User Image">
-                                <span id="name-navbar" class="hidden-xs">{{user.name}} {{user.surname}}</span>
+                                <img src="{{g.user.avatar_url}}" class="user-image" alt="User Image">
+                                <span id="name-navbar" class="hidden-xs">{{g.user.name}} {{g.user.surname}}</span>
                             </a>
                             <ul class="dropdown-menu">
                             <!-- User image -->
                                 <li class="user-header">
-                                    <img src="{{user.avatar_url}}" class="img-circle" alt="User Image">
-                                    <p id="name-dropdown">{{user.name}} {{user.surname}}</p>
+                                    <img src="{{g.user.avatar_url}}" class="img-circle" alt="User Image">
+                                    <p id="name-dropdown">{{g.user.name}} {{g.user.surname}}</p>
                                 </li>
                                 <li class="user-footer">
                                     <div class="pull-left">
@@ -75,10 +75,10 @@
             <section class="sidebar">
                 <div class="user-panel">
                     <div class="pull-left image">
-                        <img src="{{user.avatar_url}}" class="img-circle" alt="User Image">
+                        <img src="{{g.user.avatar_url}}" class="img-circle" alt="User Image">
                     </div>
                     <div class="pull-left info">
-                        <p id="name-sidebar">{{user.name}} {{user.surname}}</p>
+                        <p id="name-sidebar">{{g.user.name}} {{g.user.surname}}</p>
                         <a href="/"><i class="fa fa-circle text-success"></i> Online</a>
                     </div>
                 </div>
@@ -92,7 +92,7 @@
                         </span>
                     </div>
                 </form>
-                {% if user.role == 'admin' %}
+                {% if g.user.role == 'admin' %}
                     <ul class="sidebar-menu" data-widget="tree">
                         <li class="header">ADMIN TOOLS</li>
                         
@@ -101,7 +101,7 @@
                         <li><a href="/admin/users">
                             <i class="fa fa-users"></i> <span>Users</span>
                             <span class="pull-right-container">
-                                <span class="label label-success pull-right">0</span>
+                                <span id="not-approved-users" class="label label-success pull-right">{{g.not_approved}}</span>
                             </span>
                         </a></li>                    
 

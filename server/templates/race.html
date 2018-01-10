@@ -171,7 +171,7 @@
             if(!len) return;
 
             var race_id = parseInt("{{race.race_id}}", 10);
-            var user_id = parseInt("{{user.user_id}}", 10);
+            var user_id = parseInt("{{g.user.user_id}}", 10);
 
             var data = {"user_id": user_id, "race_length": len};
             window.callApi({

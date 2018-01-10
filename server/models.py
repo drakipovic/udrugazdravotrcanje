@@ -61,8 +61,10 @@ class User(db.Model):
 
     def __iter__(self):
         yield 'username', self.username
+        yield 'email', self.email
         yield 'full_name', self.full_name
         yield 'gender', self.gender
+        yield 'birthdate', self.birthdate
         yield 'age', self.age
         yield 'role', self.role
         yield 'approved', self.approved

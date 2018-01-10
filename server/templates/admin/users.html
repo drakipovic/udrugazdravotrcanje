@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Users
+                <small>Approve new users</small>
+
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Users</li>
+                
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12">
+                    <div class="box box-danger">
+                        <div class="box-header">
+                            <h3 class="box-title">Approve users</h3>
+                        </div>
+                        <div class="box-body">
+                            <table id="usersTable" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Gender</th>
+                                        <th>Birthdate</th>
+                                        <th>Approve</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block page_js %}
+    <script>
+        $(function () {
+            var table = $('#usersTable').DataTable({
+                'ordering': false,
+                'ajax': {
+                    'url': '/api/users/not-approved',
+                    'cache': true,
+                    'dataSrc': ''
+                },
+                'columns': [
+                    {"data": "username"},
+                    {"data": "full_name"},
+                    {"data": "email"},
+                    {
+                        "data": null,
+                        "render": function(data, type, row){
+                            if(data.gender == 'F') return '<span class="fa fa-female"/>';
+                            else return '<span class="fa fa-male"/>';
+                        }
+                    },
+                    {"data": "birthdate"},
+                    {
+                        "data": null, 
+                        "defaultContent": "<button class='btn btn-flat btn-success'>Approve</button>"
+                    }
+                ],
+            });
+
+            $('#usersTable tbody').on( 'click', 'button', function () {
+                var data = table.row( $(this).parents('tr') ).data();
+                
+                window.callApi({
+                    method: 'PUT',
+                    url: '/api/users/' + data.username + '/approve',
+                    data: {},
+                    success: function(data){
+                        if(data['success']){
+                            table.ajax.reload();
+                            $("#not-approved-users").html(Number.parseInt($("#not-approved-users").html(), 10) - 1);
+                        }
+                    }
+                })
+            } );
+        });
+    </script>
+{% endblock %}

@@ -3,7 +3,7 @@ from datetime import datetime, time
 from flask import request, jsonify, g
 from flask_restful import Resource
 
-from models import League, Race, RaceCategory, RaceResult
+from models import League, Race, RaceCategory, RaceResult, User
 
 
 class LeaguesEndpoint(Resource):
@@ -80,3 +80,24 @@ class RaceResultsEndpoint(Resource):
         race_result.save()
 
         return jsonify({"success": True, "race_result": dict(race_result)})
+
+
+class NotApprovedUsersEndpoint(Resource):
+
+    def get(self):
+        users = [dict(user) for user in User.query.filter_by(approved = False)]
+
+        return jsonify(users)
+
+
+class ApproveUserEndpoint(Resource):
+
+    #username is unique
+    def put(self, username):
+        
+        user = User.query.filter_by(username=username).first()
+        user.approved = True
+
+        user.save()
+
+        return jsonify({"success": True})

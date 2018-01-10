@@ -9,6 +9,8 @@ api.add_resource(LeaguesEndpoint, '/leagues')
 api.add_resource(RaceEndpoint, '/races/<race_id>')
 api.add_resource(RaceResultsEndpoint, '/race-results/<race_id>')
 api.add_resource(RaceResultEndpoint, '/race-result/<race_result_id>')
+api.add_resource(NotApprovedUsersEndpoint, '/users/not-approved')
+api.add_resource(ApproveUserEndpoint, '/users/<username>/approve')
 
 
 if __name__ == '__main__':

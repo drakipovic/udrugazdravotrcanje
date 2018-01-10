@@ -6,25 +6,29 @@ from main import app
 from models import User, League, Race, RaceResult
 
 
-# @app.before_request
-# def _before_request():
-#     if session.get('logged_in'):
-#         username = session['logged_in']
-#         g.user = User.query.filter_by(username=username).first()
-#         return
-    
-#     if 'static' in request.url:
-#         return
-
-#     if request.url.endswith('admin'):
-#         return
-
-#     return redirect(url_for('login_admin'))
-
-
 @app.before_request
 def _before_request():
-    g.user = User.query.get(1)
+    if session.get('logged_in'):
+        username = session['logged_in']
+        g.user = User.query.filter_by(username=username).first()
+        g.not_approved = len(User.query.filter_by(approved=False).all())
+
+        return
+
+    if 'not-approved' in request.url:
+        return
+    
+    if 'static' in request.url:
+        return
+
+    if 'register' in request.url:
+        return
+
+    if 'login' in request.url and request.method == 'GET':
+        return
+
+    if 'logged_in' not in session and 'login' not in request.url:
+        return redirect('/login')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -41,6 +45,9 @@ def login():
         if not user.check_password(password):
             return jsonify({'password': 'Wrong password!'}), 401
 
+        if not user.approved:
+            return jsonify({'not_approved': True})
+
         session['logged_in'] = username
         if remember_me:
             session.permanent = True
@@ -48,6 +55,11 @@ def login():
         return jsonify({'success': True, 'user': dict(user)})
 
     return render_template('login.html')
+
+
+@app.route('/not-approved')
+def not_approved():
+    return render_template('not_approved.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -99,19 +111,24 @@ def logout():
 @app.route('/')
 @app.route('/admin/dashboard')
 def admin_dashboard():
-    return render_template('admin/dashboard.html', user=g.user)
+    return render_template('admin/dashboard.html')
+
+
+@app.route('/admin/users')
+def admin_users():
+    return render_template('admin/users.html')
 
 
 @app.route('/admin/leagues')
 def admin_leagues():
     leagues = [dict(league) for league in League.query.all()]
-    return render_template('admin/leagues.html', user=g.user, leagues=leagues)
+    return render_template('admin/leagues.html', leagues=leagues)
 
 
 @app.route('/admin/leagues/<int:league_id>')
 def admin_league(league_id):
     league = League.query.get(league_id)
-    return render_template('admin/league.html', user=g.user, league=league)
+    return render_template('admin/league.html', league=league)
 
 
 @app.route('/admin/races/<race_id>')
@@ -119,7 +136,7 @@ def admin_race(race_id):
     race = Race.query.get(race_id)
     league = League.query.get(race.league_id)
 
-    return render_template('admin/race.html', user=g.user, race=race, league=league)
+    return render_template('admin/race.html', race=race, league=league)
 
 
 @app.route('/profile')
@@ -130,7 +147,7 @@ def profile(username=None):
     else:
         user = User.query.filter_by(username=username).first()
 
-    return render_template('profile.html', user=g.user)
+    return render_template('profile.html')
 
 
 @app.route('/races')
@@ -145,7 +162,7 @@ def races():
                                         RaceResult.user_id == g.user.user_id).first()
                                         for race in future_races]
 
-    return render_template('races.html', user=g.user, future_races=future_races, future_leagues=future_leagues, past_races=past_races, past_leagues=past_leagues, my_results=my_results)
+    return render_template('races.html', future_races=future_races, future_leagues=future_leagues, past_races=past_races, past_leagues=past_leagues, my_results=my_results)
 
 
 @app.route('/races/<race_id>')
@@ -156,7 +173,7 @@ def race(race_id):
                                         RaceResult.user_id == g.user.user_id).first()
     
     race_results = [dict(race_result) for race_result in race.race_results]
-    return render_template('race.html', user=g.user, race=race, league=league, 
+    return render_template('race.html', race=race, league=league, 
                                 my_result=my_result, race_results=race_results)
 
 
