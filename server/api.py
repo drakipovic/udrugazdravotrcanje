@@ -66,7 +66,11 @@ class RaceResultEndpoint(Resource):
 class RaceResultsEndpoint(Resource):
 
     def get(self, race_id):
-        race_results = [dict(race_result) for race_result in Race.query.get(race_id).race_results]
+        race_results = [dict(race_result) for race_result in sorted(Race.query.get(race_id).race_results)]
+        
+        for i, race_result in enumerate(race_results):
+            if race_result.get('time', None):
+                race_result['position'] = i + 1
 
         return jsonify(race_results)
 

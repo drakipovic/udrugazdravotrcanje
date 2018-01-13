@@ -13,6 +13,9 @@ def _before_request():
         g.user = User.query.filter_by(username=username).first()
         g.not_approved = len(User.query.filter_by(approved=False).all())
 
+        if 'admin' in request.url and g.user.role != 'admin':
+            return redirect('/profile')
+
         return
 
     if 'not-approved' in request.url:
@@ -108,7 +111,6 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/')
 @app.route('/admin/dashboard')
 def admin_dashboard():
     return render_template('admin/dashboard.html')
@@ -139,15 +141,16 @@ def admin_race(race_id):
     return render_template('admin/race.html', race=race, league=league)
 
 
+@app.route('/')
 @app.route('/profile')
-@app.route('/profile/{username}')
+@app.route('/profile/<username>')
 def profile(username=None):
     if not username:
         user = g.user
     else:
         user = User.query.filter_by(username=username).first()
 
-    return render_template('profile.html')
+    return render_template('profile.html', user=user)
 
 
 @app.route('/races')

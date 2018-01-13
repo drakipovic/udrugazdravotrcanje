@@ -191,6 +191,7 @@
     <script>
         $(function () {
             $('#resultsTable').DataTable({
+                'responsive': true,
                 'ordering': false,
                 'ajax': {
                     'url': '/api/race-results/{{race.race_id}}',

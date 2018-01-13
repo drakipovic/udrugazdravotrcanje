@@ -35,29 +35,29 @@
                                     <th>Actions</th>
                                 </tr>
                                 {% for race in league.races %}
-                                    {% set race = dict(race) %}
+                                    {% set race_data = dict(race) %}
                                     <tr>
-                                        <td><a href="/admin/races/{{race.id}}">Race {{race.round + 1}}</a></td>
-                                        <td>-</td>
+                                        <td><a href="/admin/races/{{race_data.id}}">Race {{race_data.round + 1}}</a></td>
+                                        <td>{{race.race_results | length}}</td>
                                         <td>
-                                            {% if race.start_time == False %}
-                                                <div id="datetimeForm{{race.id}}" class="form-group">
+                                            {% if race_data.start_time == False %}
+                                                <div id="datetimeForm{{race_data.id}}" class="form-group">
                                                     <div class="input-group input-group-sm">
                                                         <div class="input-group-addon">
                                                             <i class="fa fa-calendar"></i>
                                                         </div>
-                                                        <input type="text" id="inputDatetime{{race.id}}" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy hh:mm'" data-mask>
+                                                        <input type="text" id="inputDatetime{{race_data.id}}" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy hh:mm'" data-mask>
                                                         <span class="input-group-btn">
-                                                            <button onclick="editStartTime({{race.id}})" type="button" class="btn btn-success btn-flat"><span class="glyphicon glyphicon-ok"/></button>
+                                                            <button onclick="editStartTime({{race_data.id}})" type="button" class="btn btn-success btn-flat"><span class="glyphicon glyphicon-ok"/></button>
                                                         </span>
                                                     </div>
                                                 </div>
                                             {% else %}
-                                                {{ race.start_time }}
+                                                {{ race_data.start_time }}
                                             {% endif %}
-                                            <div id="editedDateTime{{race.id}}" hidden></div>
+                                            <div id="editedDateTime{{race_data.id}}" hidden></div>
                                         </td>
-                                        {% if race.finished %}
+                                        {% if race_data.finished %}
                                             <td><span class="badge bg-green"><i class="fa fa-check"/></span></td>
                                         {% else %}
                                             <td><span class="badge bg-red"><i class="fa fa-times"/></span></td>

@@ -215,6 +215,14 @@ class RaceResult(db.Model):
         yield 'start_number', self.start_number
         yield 'full_name', User.query.get(self.user_id).full_name
 
+    def __eq__(self, other):
+        if self.race_time and other.race_time:
+            return self.race_time == other.race_time
+
+    def __lt__(self, other):
+        if self.race_time and other.race_time:
+            return self.race_time < other.race_time
+
     def save(self):
         db.session.add(self)
         db.session.commit()
