@@ -53,18 +53,34 @@
                                                     </div>
                                                 </div>
                                             {% else %}
-                                                {{ race_data.start_time }}
+                                                <div id="editedDateTime{{race_data.id}}">
+                                                    {{ race_data.start_time }}
+                                                </div>
                                             {% endif %}
                                             <div id="editedDateTime{{race_data.id}}" hidden></div>
+                                            <div id="datetimeForm{{race_data.id}}" class="form-group" hidden>
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                    <input type="text" id="inputDatetime{{race_data.id}}" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy hh:mm'" data-mask>
+                                                    <span class="input-group-btn">
+                                                        <button onclick="editStartTime({{race_data.id}})" type="button" class="btn btn-success btn-flat"><span class="glyphicon glyphicon-ok"/></button>
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </td>
                                         {% if race_data.finished %}
-                                            <td><span class="badge bg-green"><i class="fa fa-check"/></span></td>
+                                            <td><span class="badge bg-green"><i class="fa fa-check" /></span></td>
                                         {% else %}
-                                            <td><span class="badge bg-red"><i class="fa fa-times"/></span></td>
+                                            <td><span class="badge bg-red"><i class="fa fa-times" /></span></td>
                                         {% endif %}
                                         <td>
-                                            <span class="text-info glyphicon glyphicon-edit"/>&nbsp;
-                                            <span class="text-danger glyphicon glyphicon-trash"/>
+                                            <span onClick="showEdit({{race_data.id}})" class="text-info glyphicon glyphicon-edit clickable"/>&nbsp;
+                                            <span class="text-danger glyphicon glyphicon-trash clickable" 
+                                                        data-toggle="confirmation" data-singleton="true"
+                                                        data-title="Jesi siguran?" data-content="Brisanje je nepovratno"
+                                                        data-on-confirm="deleteRace" data-id="{{race_data.id}}"/>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -83,10 +99,20 @@
 
 {% block page_js %}
 <script>
+    function deleteRace(){
+        var id = $(this)[0].getAttribute('data-id');
+        
+        window.callApi({
+            url: '/api/races/' + id,
+            method: 'DELETE',
+            success: function(data){
+                window.location = '/admin/leagues/{{league.league_id}}';
+            }
+        })
+    }
     function editStartTime(race_id){
         if($("#inputDatetime"+race_id).val()){
             var data = {"start_time": $("#inputDatetime"+race_id).val()};
-            console.log(data);
             $.ajax({
                 url: '/api/races/' + race_id,
                 method: 'PUT',
@@ -100,6 +126,15 @@
                 }
             });
         }
+    }
+
+    function showEdit(race_id){
+        var datetime = $("#editedDateTime"+race_id+":visible").html().trim();
+        console.log(datetime.trim());
+        $("#inputDatetime"+race_id).val(datetime);
+        $("#editedDateTime"+race_id).hide();
+        $("#datetimeForm"+race_id).show();
+
     }
 </script>
 

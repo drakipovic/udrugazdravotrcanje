@@ -140,8 +140,14 @@
         <script src="/static/js/libs/jquery.easy-autocomplete.js"></script>
         <script src="/static/js/libs/jquery.dataTables.js"></script>
         <script src="/static/js/libs/dataTables.bootstrap.js"></script>
+        <script src="/static/js/libs/bootstrap-confirmation.js"></script>
         <script src="/static/js/custom/utils.js"></script>
-        
+        <script>
+            $('[data-toggle=confirmation]').confirmation({
+            rootSelector: '[data-toggle=confirmation]',
+            // other options
+          });
+        </script>
         {% block page_js %}
             
         {% endblock %}

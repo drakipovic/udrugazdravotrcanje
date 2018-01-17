@@ -27,6 +27,16 @@ class LeaguesEndpoint(Resource):
         return jsonify({"success": True, "league": dict(league)})
 
 
+class LeagueEndpoint(Resource):
+    
+    def delete(self, league_id):
+        league = League.query.get(league_id)
+
+        league.delete()
+
+        return jsonify({"success": True})
+
+
 class RaceEndpoint(Resource):
 
     def put(self, race_id):
@@ -43,6 +53,13 @@ class RaceEndpoint(Resource):
         race.save()
 
         return jsonify({"success": True, "race": dict(race)})
+
+    def delete(self, race_id):
+        race = Race.query.get(race_id)
+
+        race.delete()
+
+        return jsonify({"success": True})
 
 
 class RaceResultEndpoint(Resource):

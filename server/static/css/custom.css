@@ -70,3 +70,7 @@ th{
 .decorated > span:after{
    left: 100%;
 }
+
+.clickable{
+    cursor: pointer;
+}

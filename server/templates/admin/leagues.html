@@ -45,8 +45,10 @@
                                         <td>{{league.year}}</td>
                                         <td align="center"><span class="badge bg-green">{{league.rounds}}</span></td>
                                         <td>
-                                            <span class="text-info glyphicon glyphicon-edit"/>&nbsp;
-                                            <span class="text-danger glyphicon glyphicon-trash"/>
+                                            <span class="text-danger glyphicon glyphicon-trash"
+                                                data-toggle="confirmation" data-singleton="true"
+                                                data-title="Jesi siguran?" data-content="Brisanje je nepovratno"
+                                                data-on-confirm="deleteLeague" data-id="{{league.id}}"/>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -161,7 +163,7 @@
                             "<td><a href=/admin/leagues/" + data['id'] + ">" + data['name'] + "</a></td>" +
                             "<td>" + data['year'] + "</td>" +
                             "<td align='center'><span class='badge bg-green'>" + data['rounds'] + "</span></td>" +
-                            "<td><span class='text-info glyphicon glyphicon-edit'/>" + "&nbsp;" + "<span class='text-danger glyphicon glyphicon-trash'/></td>" +
+                            "<td><span class='text-danger glyphicon glyphicon-trash'/></td>" +
                         "</tr>"
                     );
 
@@ -171,7 +173,18 @@
 
                 
             });
-            
+        };
+
+        function deleteLeague(){
+            var id = $(this)[0].getAttribute('data-id');
+        
+            window.callApi({
+                url: '/api/leagues/' + id,
+                method: 'DELETE',
+                success: function(data){
+                    window.location = '/admin/leagues';
+                }
+            });
         }
     </script>
 
