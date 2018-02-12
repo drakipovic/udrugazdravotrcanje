@@ -9,7 +9,7 @@
   <link rel="manifest" href="/static/manifest.json">
   <link rel="mask-icon" href="/static/safari-pinned-tab.svg" color="#5bbad5">
   <meta name="theme-color" content="#ffffff">
-  <title>Register</title>
+  <title>Register Admin</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -33,7 +33,7 @@
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">Registriraj se i kreni trčati :)</p>
+    <p class="login-box-msg">Registriraj novog admina</p>
 
     <form>
       <div id="username-group" class="form-group has-feedback">
@@ -57,18 +57,18 @@
         <span id="email-error" class="help-block email-error"></span>
       </div>
       <div id="name-group" class="form-group has-feedback">
-        <input type="text" class="form-control" id="name" placeholder="Name">
+        <input type="text" class="form-control" id="name" placeholder="Ime">
         <span class="fa fa-address-book form-control-feedback"></span>
         <span id="name-error" class="help-block"></span>
       </div>
       <div id="surname-group" class="form-group has-feedback">
-        <input type="text" class="form-control" id="surname" placeholder="Surname">
+        <input type="text" class="form-control" id="surname" placeholder="Prezime">
         <span class="fa fa-address-card form-control-feedback"></span>
         <span id="surname-error" class="help-block"></span>
       </div>
       <div id="gender-group" class="form-group has-feedback">
         <select id="gender" class="form-control">
-          <option disabled selected="selected">Gender</option>
+          <option disabled selected="selected">Spol</option>
           <option value="M">Male</option>
           <option value="F">Female</option>
         </select>
@@ -136,7 +136,7 @@
             contentType: 'application/json',
             dataType: 'json',
             data: JSON.stringify(data),
-            url: '/register',
+            url: '/admin/register',
             success: function(data){
                 window.location = '/login'
             }.bind(this),

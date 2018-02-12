@@ -6,12 +6,12 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Races overview
-                <small>Register or look for races</small>
+                Pregled utrka
+                <small>Registriraj se ili pregledaj utrke</small>
             </h1>
             <ol class="breadcrumb">
-                <li><a href="/profile"><i class="fa fa-user"></i> Profile</a></li>
-                <li class="active">Races</li>
+                <li><a href="/profile"><i class="fa fa-user"></i> Profil</a></li>
+                <li class="active">Utrke</li>
 
             </ol>
         </section>
@@ -19,7 +19,7 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <h4 class="decorated"><span>10 future races</span></h4>
+                    <h4 class="decorated"><span>10 budućih utrka</span></h4>
                 </div>
                 {% for race in future_races %}
                     <div class="well">
@@ -28,7 +28,7 @@
                                 {{future_leagues[loop.index0].name + " " + future_leagues[loop.index0].year|string}}
                             </div>
                             <div class="col-xs-3 col-sm-3 col-content">
-                                Round {{race.league_round + 1}} / {{future_leagues[loop.index0].rounds}}
+                                Runda {{race.league_round + 1}} / {{future_leagues[loop.index0].rounds}}
                             </div>
                             <div class="col-xs-3 col-sm-3 col-content">
                                 {{race.start_time}}
@@ -36,9 +36,9 @@
                             <div class="col-xs-3 col-sm-3 col-mid">
                                 <a href="/races/{{race.race_id}}">
                                     {% if my_results[loop.index0].start_number %}
-                                        Race details
+                                        Detalji utrke
                                     {% else %}
-                                        Register
+                                        Registriraj se
                                     {% endif %}
                                 </a>
                             </div>
@@ -46,7 +46,7 @@
                     </div>
                 {% endfor %}
                 <div class="row">
-                    <h4 class="decorated"><span>10 past races</span></h4>
+                    <h4 class="decorated"><span>10 prošlih utrka</span></h4>
                 </div>
                 {% for race in past_races %}
                     <div class="well">
@@ -55,14 +55,14 @@
                                 {{past_leagues[loop.index0].name + " " + past_leagues[loop.index0].year|string}}
                             </div>
                             <div class="col-xs-3 col-sm-3 col-content">
-                                Round {{race.league_round + 1}} / {{past_leagues[loop.index0].rounds}}
+                                Runda {{race.league_round + 1}} / {{past_leagues[loop.index0].rounds}}
                             </div>
                             <div class="col-xs-3 col-sm-3 col-content">
                                 {{race.start_time}}
                             </div>
                             <div class="col-xs-3 col-sm-3 col-mid">
                                 <a href="/races/{{race.race_id}}">
-                                    Race details
+                                    Detalji utrke
                                 </a>
                             </div>
                         </div>

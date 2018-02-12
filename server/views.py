@@ -18,6 +18,9 @@ def _before_request():
 
         return
 
+    if 'api' in request.url:
+        return
+
     if 'not-approved' in request.url:
         return
     
@@ -101,6 +104,45 @@ def register():
         return jsonify({"success": True, "user": dict(user)})
 
     return render_template('register.html')
+
+
+@app.route('/admin/register', methods=['GET', 'POST'])
+def admin_register():
+    if request.method == 'POST':
+        username = request.json.get('username')
+        password = request.json.get('password')
+        email = request.json.get('email')
+        name = request.json.get('name')
+        surname = request.json.get('surname')
+        gender = request.json.get('gender')
+        birthdate = request.json.get('birthdate')
+
+        errors = []
+
+        user = User.query.filter_by(username=username).first()
+        if user:
+            errors.append({"username": "Username already taken, please choose another."})
+        
+        if not username: errors.append({"username": "This field is required!"})
+        if not password: errors.append({"password": "This field is required!"})
+        if not email: errors.append({"email": "This field is required!"})
+        if not name: errors.append({"name": "This field is required!"})
+        if not surname: errors.append({"surname": "This field is required!"})
+        if not gender: errors.append({"gender": "This field is required!"})
+        if not birthdate: errors.append({"birthdate": "This field is required!"})
+
+        if errors:
+            return jsonify({"errors": errors}), 400
+        
+        birthdate = datetime.strptime(birthdate, "%d/%m/%Y")
+
+        user = User(username, password, email, name, surname, gender, birthdate, 
+                    role='admin', approved=True)
+        user.save()
+
+        return jsonify({"success": True, "user": dict(user)})
+
+    return render_template('admin/register.html')
 
 
 @app.route('/logout')

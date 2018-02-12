@@ -4,10 +4,21 @@ from flask import request, jsonify, g
 from flask_restful import Resource
 
 from models import League, Race, RaceCategory, RaceResult, User
+from main import auth
+
+
+@auth.verify_password
+def verify_password(username, password):
+    user = User.query.filter_by(username = username).first()
+    if not user or not user.check_password(password):
+        return False
+
+    return True
 
 
 class LeaguesEndpoint(Resource):
 
+    @auth.login_required
     def post(self):
         data = request.get_json()
         year = data['year']
@@ -29,6 +40,7 @@ class LeaguesEndpoint(Resource):
 
 class LeagueEndpoint(Resource):
     
+    @auth.login_required
     def delete(self, league_id):
         league = League.query.get(league_id)
 
@@ -39,6 +51,7 @@ class LeagueEndpoint(Resource):
 
 class RaceEndpoint(Resource):
 
+    @auth.login_required
     def put(self, race_id):
         data = request.get_json()
 
@@ -54,6 +67,7 @@ class RaceEndpoint(Resource):
 
         return jsonify({"success": True, "race": dict(race)})
 
+    @auth.login_required
     def delete(self, race_id):
         race = Race.query.get(race_id)
 
@@ -64,6 +78,7 @@ class RaceEndpoint(Resource):
 
 class RaceResultEndpoint(Resource):
 
+    @auth.login_required
     def put(self, race_result_id):
         data = request.get_json()
 
@@ -82,6 +97,7 @@ class RaceResultEndpoint(Resource):
 
 class RaceResultsEndpoint(Resource):
 
+    @auth.login_required
     def get(self, race_id):
         race_results = [dict(race_result) for race_result in sorted(Race.query.get(race_id).race_results)]
         
@@ -91,6 +107,7 @@ class RaceResultsEndpoint(Resource):
 
         return jsonify(race_results)
 
+    @auth.login_required
     def post(self, race_id):
         data = request.get_json()
 
@@ -105,6 +122,7 @@ class RaceResultsEndpoint(Resource):
 
 class NotApprovedUsersEndpoint(Resource):
 
+    @auth.login_required
     def get(self):
         users = [dict(user) for user in User.query.filter_by(approved = False)]
 
@@ -114,6 +132,7 @@ class NotApprovedUsersEndpoint(Resource):
 class ApproveUserEndpoint(Resource):
 
     #username is unique
+    @auth.login_required
     def put(self, username):
         
         user = User.query.filter_by(username=username).first()

@@ -8,19 +8,19 @@
             <h1>
                 {{race.league_round + 1}}. race from {{league.name}} {{league.year}}
                 {% if race.start_time != None and not race.finished  %}
-                    <small>Starts on {{race.start_time}}</small>
+                    <small>Kreće {{race.start_time}}</small>
                 {% elif race.finished %}
-                    <small>Race finished.</small>
+                    <small>Utrka gotova.</small>
                 {% else %}
-                    <small class="text-danger">Race start not yet set!</small>
+                    <small class="text-danger">Početak utrke još nije postavljen.</small>
                 {% endif %}
 
             </h1>
             <ol class="breadcrumb">
-                <li><a href="/profile"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li><a href="/leagues/"><i class="fa fa-trophy"></i> Leagues</a></li>
-                <li><a href="/leagues/{{race.league_id}}">League</a></li>
-                <li class="active">Race</li>
+                <li><a href="/profile"><i class="fa fa-dashboard"></i> Profil</a></li>
+                <li><a href="/leagues/"><i class="fa fa-trophy"></i> Lige</a></li>
+                <li><a href="/leagues/{{race.league_id}}">Liga</a></li>
+                <li class="active">Utrka</li>
             </ol>
         </section>
 
@@ -33,7 +33,7 @@
                                 <div class="box box-danger">
                                     <div class="box-header with-border text-center">
                                         <h3 class="box-title">
-                                            Until race start
+                                            Do početka utrke
                                         </h3>
                                     </div>
                                     <div class="box-body">
@@ -41,25 +41,25 @@
                                             <div class="div-bordered">
                                                 <h3 id="days">-</h3>
                                             </div>
-                                            Days
+                                            Dani
                                         </div>
                                         <div class="col-xs-3 col-sm-3 text-center">
                                             <div class="div-bordered">
                                                 <h3 id="hours">-</h3>
                                             </div>
-                                            Hours
+                                            Sati
                                         </div>
                                         <div class="col-xs-3 col-sm-3 text-center">
                                             <div class="div-bordered">
                                                 <h3 id="minutes">-</h3>
                                             </div>
-                                            Minutes
+                                            Minute
                                         </div>
                                         <div class="col-xs-3 col-sm-3 text-center">
                                             <div class="div-bordered">
                                                 <h3 id="seconds">-</h3>
                                             </div>
-                                            Seconds
+                                            Sekunde
                                         </div>
                                     </div>
                                 </div>
@@ -70,14 +70,14 @@
                                 <div id="register">
                                     <div class="form-group">
                                         <select id="category" class="form-control">
-                                            <option disabled selected>Choose race category</option>
+                                            <option disabled selected>Odaberi kategoriju</option>
                                             {% for category in league.race_categories %}
                                                 <option value="{{category.race_length}}">{{category.race_length}} km</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                     <div class="text-center">
-                                        <button onclick="registerForRace()" type="submit" class="btn btn-flat btn-success">Register for race</button>
+                                        <button onclick="registerForRace()" type="submit" class="btn btn-flat btn-success">Registriraj se za utrku</button>
                                     </div>
                                 </div>
                             {% else %}
@@ -86,7 +86,7 @@
                                         <div class="inner">
                                             <h3>{{my_result.start_number}}</h3>
                             
-                                            <p>My Starting Number</p>
+                                            <p>Moj startni broj</p>
                                         </div>
                                     </div>
                                 </div>
@@ -96,7 +96,7 @@
                                     <div class="inner">
                                         <h3 id="number"></h3>
                         
-                                        <p>My Starting Number</p>
+                                        <p>Moj startni broj</p>
                                     </div>
                                 </div>
                             </div>
@@ -107,17 +107,17 @@
                     <div class="col-xs-12 col-sm-12">
                         <div class="box box-danger">
                             <div class="box-header">
-                                <h3 class="box-title">Results</h3>
+                                <h3 class="box-title">Rezultati</h3>
                             </div>
                             <div class="box-body">
                                 <table id="resultsTable" class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Position</th>
-                                            <th>Name</th>
-                                            <th>Time</th>
-                                            <th>Category</th>
-                                            <th>Start Number</th>
+                                            <th>Pozicija</th>
+                                            <th>Ime</th>
+                                            <th>Vrijeme</th>
+                                            <th>Kategorija</th>
+                                            <th>Startni broj</th>
                                         </tr>
                                     </thead>
                                     

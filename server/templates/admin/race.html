@@ -8,19 +8,19 @@
         <h1>
             {{race.league_round + 1}}. race from {{league.name}} {{league.year}}
             {% if race.start_time != None and not race.finished  %}
-                <small>Starts on {{race.start_time}}</small>
+                <small>Počinje {{race.start_time}}</small>
             {% elif race.finished %}
-                <small>Race finished.</small>
+                <small>Utrka gotova.</small>
             {% else %}
-                <small class="text-danger">Race start not set!</small>
+                <small class="text-danger">Vrijeme početka nije postavljeno.</small>
             {% endif %}
 
         </h1>
         <ol class="breadcrumb">
-            <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="/admin/leagues/"><i class="fa fa-trophy"></i> Leagues</a></li>
+            <li><a href="/"><i class="fa fa-dashboard"></i> Profil</a></li>
+            <li><a href="/admin/leagues/"><i class="fa fa-trophy"></i> Lige</a></li>
             <li><a href="/admin/leagues/{{race.league_id}}">{{league.name}}</a></li>
-            <li class="active">Race {{race.league_round + 1}}</li>
+            <li class="active">Utrka {{race.league_round + 1}}</li>
         </ol>
     </section>
 
@@ -35,12 +35,12 @@
                             </div>
                             <div class="col-xs-12 col-sm-3">
                                 <div class="input-group">
-                                    <input id="race-time" class="form-control" placeholder="Enter race time" data-mask/>
+                                    <input id="race-time" class="form-control" placeholder="Unesi vrijeme" data-mask/>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-4">
                                 <select id="race-category" class="form-control">
-                                    <option selected disabled>Select race category</option>
+                                    <option selected disabled>Kategorija</option>
                                     {% for category in league.race_categories %}
                                         <option value="{{category.race_length}}">{{category.race_length}} km</option>
                                     {% endfor %}
@@ -58,12 +58,12 @@
                     <div class="box-header with-border text-center">
                         <h3 class="box-title">
                             {% if race.start_time != None and not race.finished %}
-                                Until race start
+                                Do početka
                             {% elif race.finished %}
-                                Race finished
+                                Utrka gotova
                             {% else %}
                                 <div id="race_title" class="text-center text-danger">
-                                    Race start not set
+                                    Vrijeme utrke nije postavljeno
                                 </div>
                             {% endif %}
                         </h3>
@@ -75,31 +75,31 @@
                                     <div class="div-bordered">
                                         <h3 id="days">-</h3>
                                     </div>
-                                    Days
+                                    Dani
                                 </div>
                                 <div class="col-xs-3 col-sm-3 text-center">
                                     <div class="div-bordered">
                                         <h3 id="hours">-</h3>
                                     </div>
-                                    Hours
+                                    Sati
                                 </div>
                                 <div class="col-xs-3 col-sm-3 text-center">
                                     <div class="div-bordered">
                                         <h3 id="minutes">-</h3>
                                     </div>
-                                    Minutes
+                                    Minute
                                 </div>
                                 <div class="col-xs-3 col-sm-3 text-center">
                                     <div class="div-bordered">
                                         <h3 id="seconds">-</h3>
                                     </div>
-                                    Seconds
+                                    Sekunde
                                 </div>
                             </div>
                         </div>
                         <div id="markFinished" class="text-center" hidden>
                             <div class="box-body">
-                                <button onclick="markRaceFinished({{race.race_id}})" type="submit" class="btn btn-danger">Mark race finished <span class="glyphicon glyphicon-ok"/></span></button>
+                                <button onclick="markRaceFinished({{race.race_id}})" type="submit" class="btn btn-danger">Postavi utrku kao gotovu <span class="glyphicon glyphicon-ok"/></span></button>
                             </div>
                         </div>
                     {% endif %}
@@ -110,19 +110,19 @@
             <div class="col-sm-12">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs pull-right">
-                        <li class="active"><a href="#tab_1-1" data-toggle="tab">Results</a></li>                        
-                        <li class="pull-left header"><i class="fa fa-street-view"></i>Race overview</li>
+                        <li class="active"><a href="#tab_1-1" data-toggle="tab">Rezultati</a></li>                        
+                        <li class="pull-left header"><i class="fa fa-street-view"></i>Pregled utrke</li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1-1">
                             <table id="resultsTable" class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Position</th>
-                                        <th>Name</th>
-                                        <th>Time</th>
-                                        <th>Category</th>
-                                        <th>Start Number</th>
+                                        <th>Pozicija</th>
+                                        <th>Ime</th>
+                                        <th>Vrijeme</th>
+                                        <th>Kategorija</th>
+                                        <th>Startni broj</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -228,7 +228,7 @@
                 method: 'PUT',
                 data: JSON.stringify({"finished": true, "id": race_id}),
                 success: function(data){
-                    $(".box-title").text("Race finished");
+                    $(".box-title").text("Utrka gotova.");
                     $("#markFinished").hide();
                 }
 
@@ -255,7 +255,7 @@
                     if(race_data.time != "-") $("#race-time").val(race_data.time);
                 }
             },
-            placeholder: "Search for runners...",
+            placeholder: "Traži trkača",
             theme: "square"
         };
 

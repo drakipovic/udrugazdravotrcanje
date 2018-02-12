@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Udruga Zdravo Trčanje Admin</title>
+        <title>Udruga Zdravo Trčanje</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         
@@ -59,10 +59,10 @@
                                 </li>
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="/" class="btn btn-default btn-flat">Profile</a>
+                                        <a href="/" class="btn btn-default btn-flat">Profil</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="/logout" class="btn btn-default btn-flat">Odjavi se</a>
                                     </div>
                                 </li>
                             </ul>
@@ -97,21 +97,22 @@
                         <li class="header">ADMIN TOOLS</li>
                         
                         <li><a href="/admin/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-                        <li><a href="/admin/leagues"><i class="fa fa-trophy"></i> <span>Leagues</span></a></li>                    
+                        <li><a href="/admin/leagues"><i class="fa fa-trophy"></i> <span>Lige</span></a></li>                    
                         <li><a href="/admin/users">
-                            <i class="fa fa-users"></i> <span>Users</span>
+                            <i class="fa fa-users"></i> <span>Korisnici</span>
                             <span class="pull-right-container">
                                 <span id="not-approved-users" class="label label-success pull-right">{{g.not_approved}}</span>
                             </span>
-                        </a></li>                    
+                        </a></li>   
+                        <li><a href="/admin/register"><i class="fa fa-user-plus"></i> <span>Registriraj admina</span></a></li>                                     
 
                     </ul>
                 {% endif %}
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
                     
-                    <li><a href="/profile"><i class="fa fa-user"></i> <span>Profile</span></a></li>
-                    <li><a href="/races"><i class="fa fa-road"></i> <span>Races</span></a></li>
+                    <li><a href="/profile"><i class="fa fa-user"></i> <span>Profil</span></a></li>
+                    <li><a href="/races"><i class="fa fa-road"></i> <span>Utrke</span></a></li>
                     
                 </ul>
 

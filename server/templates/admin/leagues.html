@@ -12,12 +12,12 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Leagues
-                <small>Preview and creation of leagues</small>
+                Lige
+                <small>Pregled i kreiranje liga</small>
             </h1>
             <ol class="breadcrumb">
-                <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">Leagues</li>
+                <li><a href="/"><i class="fa fa-dashboard"></i> Profil</a></li>
+                <li class="active">Liga</li>
 
             </ol>
         </section>
@@ -27,16 +27,16 @@
                 <div class="col-sm-7">
                     <div class="box box-danger">
                         <div class="box-header">
-                            <h3 class="box-title">Created leagues</h3>
+                            <h3 class="box-title">Kreiraj ligu</h3>
                         </div>
                         <div class="box-body no-padding">
                             <table id="leaguesTable" class="table table-bordered">
                                 <tr>
                                     <th style="width: 7px">#</th>
-                                    <th>Name</th>
-                                    <th>Year</th>
-                                    <th>Rounds</th>
-                                    <th>Actions</th>
+                                    <th>Ime lige</th>
+                                    <th>Godina početka</th>
+                                    <th>Broj rundi</th>
+                                    <th>Akcije</th>
                                 </tr>
                                 {% for league in leagues %}
                                     <tr>
@@ -45,7 +45,7 @@
                                         <td>{{league.year}}</td>
                                         <td align="center"><span class="badge bg-green">{{league.rounds}}</span></td>
                                         <td>
-                                            <span class="text-danger glyphicon glyphicon-trash"
+                                            <span class="text-danger glyphicon glyphicon-trash clickable"
                                                 data-toggle="confirmation" data-singleton="true"
                                                 data-title="Jesi siguran?" data-content="Brisanje je nepovratno"
                                                 data-on-confirm="deleteLeague" data-id="{{league.id}}"/>
@@ -60,51 +60,51 @@
                 <div class="col-sm-5">
                     <div class="box box-danger">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Add a league</h3>
+                            <h3 class="box-title">Dodaj ligu</h3>
                         </div>
                         <form id="leagueForm" class="form-horizontal">
                             <div class="box-body">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Name</label>
+                                    <label class="col-sm-3 control-label">Ime</label>
                 
                                     <div class="col-sm-9">
                                         <div class="input-group">
                                             <div class="input-group-addon">
                                                 <i class="fa fa-trophy"></i>
                                             </div>
-                                            <input type="text" class="form-control" id="leagueName" placeholder="Name">
+                                            <input type="text" class="form-control" id="leagueName" placeholder="Ime lige">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Year</label>
+                                    <label class="col-sm-3 control-label">Godina</label>
                                         
                                     <div class="col-sm-9">
                                         <div class="input-group">
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar-times-o"></i>
                                             </div>
-                                            <input type="text" class="form-control" id="leagueYear" placeholder="Start year">
+                                            <input type="text" class="form-control" id="leagueYear" placeholder="Godina početka">
                                         </div>
                                     </div>                                             
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Rounds</label>
+                                    <label class="col-sm-3 control-label">Broj rundi</label>
                 
                                     <div class="col-sm-9">
                                         <div class="input-group">
                                             <div class="input-group-addon">
                                                 <i class="fa fa-th"></i>
                                             </div>
-                                            <input type="text" id="leagueRounds" class="form-control" placeholder="Number of rounds">
+                                            <input type="text" id="leagueRounds" class="form-control" placeholder="Broj utrka">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                        <label class="col-sm-3 control-label">Categories</label>
+                                        <label class="col-sm-3 control-label">Kategorija</label>
                     
                                         <div class="col-sm-9">
-                                            <select id="categoriesSelector" name="categories[]" multiple="multiple" class="form-control" data-placeholder="Select race categories"
+                                            <select id="categoriesSelector" name="categories[]" multiple="multiple" class="form-control" data-placeholder="Odaberi kategorije"
                                             style="width: 100%;">
                                                 <option value="2.5">2.5km</option>
                                                 <option value="4.2">4.2km</option>
@@ -115,7 +115,7 @@
                                     </div>
                             </div>                                    
                             <div class="box-footer">
-                                <button onclick="addLeague()" type="button" class="btn btn-danger pull-right">Create</button>
+                                <button onclick="addLeague()" type="button" class="btn btn-danger pull-right">Kreiraj</button>
                             </div>                                   
                         </form>
                     </div>
