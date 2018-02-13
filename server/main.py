@@ -15,7 +15,7 @@ app = Flask('server')
 
 
 if os.environ.get('PROD', None):
-    app.config.from_object(ProdConfig)
+    app.config.from_object(ProductionConfig)
 else:
     app.config.from_object(TestConfig if os.environ.get('TEST', None) else DevelopmentConfig)
 
