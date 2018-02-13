@@ -9,7 +9,7 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'postgresql://drakipovic:{}@{}/{}'.format(os.environ.get('UZT_PASSWORD'), 
+    SQLALCHEMY_DATABASE_URI = 'postgresql://drakipovic:{}@{}:5432/{}'.format(os.environ.get('UZT_PASSWORD'), 
                                                                         os.environ.get('UZT_DOMAIN'),
                                                                         os.environ.get('UZT_DB_NAME'))
 
