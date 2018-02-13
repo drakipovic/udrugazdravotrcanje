@@ -1,3 +1,5 @@
+import os
+
 class Config(object):
     SECRET_KEY = 'tajna'
     DEBUG = False
@@ -7,7 +9,9 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///prod.db'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://drakipovic:{}@{}/{}'.format(os.environ.get('UZT_PASSWORD'), 
+                                                                        os.environ.get('UZT_DOMAIN'),
+                                                                        os.environ.get('UZT_DB_NAME'))
 
 
 class DevelopmentConfig(Config):

@@ -160,7 +160,8 @@ def admin_dashboard():
 
 @app.route('/admin/users')
 def admin_users():
-    return render_template('admin/users.html')
+    users = [user for user in User.query.filter_by(approved=True).all()]
+    return render_template('admin/users.html', users=users)
 
 
 @app.route('/admin/leagues')

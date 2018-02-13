@@ -7,7 +7,7 @@
         <section class="content-header">
             <h1>
                 Korisnici
-                <small>Potvrdi nove korisnike</small>
+                <small>Potvrdi nove korisnike i pregledaj postojece korisnike</small>
 
             </h1>
             <ol class="breadcrumb">
@@ -20,25 +20,58 @@
         <section class="content">
             <div class="row">
                 <div class="col-xs-12 col-sm-12">
-                    <div class="box box-danger">
-                        <div class="box-header">
-                            <h3 class="box-title">Potvrdi korisnike</h3>
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#tab_1" data-toggle="tab">Potvrdi</a></li>
+                            <li><a href="#tab_2" data-toggle="tab">Korisnici</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab_1">
+                                <div class="box box-danger">
+                                    <div class="box-header">
+                                        <h3 class="box-title">Potvrdi korisnike</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <table id="usersTable" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Username</th>
+                                                    <th>Ime</th>
+                                                    <th>Email</th>
+                                                    <th>Spol</th>
+                                                    <th>Rođendan</th>
+                                                    <th>Potvrdi</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tab_2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Ime</th>
+                                            <th>Email</th>
+                                            <th>Spol</th>
+                                            <th>Rođendan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in users %}
+                                            <tr>
+                                                <td>{{user.username}}</td>
+                                                <td>{{user.name}} {{user.surname}}</td>
+                                                <td>{{user.email}}</td>
+                                                <td>{{user.gender}}</td>
+                                                <td>{{user.birthdate}}</td>
+                                            <tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="box-body">
-                            <table id="usersTable" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Username</th>
-                                        <th>Ime</th>
-                                        <th>Email</th>
-                                        <th>Spol</th>
-                                        <th>Rodendan</th>
-                                        <th>Potvrdi</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
@@ -53,7 +86,11 @@
                 'ajax': {
                     'url': '/api/users/not-approved',
                     'cache': true,
-                    'dataSrc': ''
+                    'dataSrc': '',
+                    "beforeSend": function(xhr){
+                        xhr.setRequestHeader("Authorization",
+                           "Basic " + btoa(localStorage.getItem('username') + ":" + localStorage.getItem('password')));
+                     }
                 },
                 'columns': [
                     {"data": "username"},
