@@ -47,7 +47,7 @@ class User(db.Model):
 
     race_results = db.relationship('RaceResult', backref='user', lazy='select', cascade='all, delete, delete-orphan')
 
-    def __init__(self, username, password, email, name, surname, gender, birthdate, role='user', approved=False):
+    def __init__(self, username, password, email=None, name=None, surname=None, gender=None, birthdate=None, role='user', approved=False):
         self.username = username
         self.password_hash = self._set_password(password)
         self.email = email
@@ -81,8 +81,11 @@ class User(db.Model):
     
     @property
     def full_name(self):
-        return "{} {}".format(self.name.encode('utf-8'), self.surname.encode('utf-8'))
-
+        if self.name and self.surname:
+            return "{} {}".format(self.name.encode('utf-8'), self.surname.encode('utf-8'))
+        
+        return None
+    
     def save(self):
         db.session.add(self)
         db.session.commit()

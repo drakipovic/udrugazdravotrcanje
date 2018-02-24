@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                {{league.name}} {{league.year}}
+                <small>Sve o ligi</small>
+
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="/profile"><i class="fa fa-dashboard"></i> Profil</a></li>
+                <li><a href="/leagues/"><i class="fa fa-trophy"></i> Lige</a></li>
+                <li class="active">Liga</li>
+            </ol>
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+
+            </div>
+        </section>
+    </div>
+{% endblock %}

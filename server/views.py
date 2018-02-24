@@ -58,7 +58,7 @@ def login():
         if remember_me:
             session.permanent = True
 
-        return jsonify({'success': True, 'user': dict(user)})
+        return jsonify({'success': True})
 
     return render_template('login.html')
 
@@ -221,6 +221,13 @@ def race(race_id):
     race_results = [dict(race_result) for race_result in race.race_results]
     return render_template('race.html', race=race, league=league, 
                                 my_result=my_result, race_results=race_results)
+
+
+@app.route('/leagues/<league_id>')
+def league(league_id):
+    league = League.query.get(league_id)
+
+    return render_template('league.html', league=league)
 
 
 @app.errorhandler(404)

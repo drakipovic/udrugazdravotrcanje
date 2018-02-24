@@ -25,7 +25,9 @@
                     <div class="well">
                         <div class="row">
                             <div class="col-xs-3 col-sm-3 col-content">
-                                {{future_leagues[loop.index0].name + " " + future_leagues[loop.index0].year|string}}
+                                <a href="/leagues/{{future_leagues[loop.index0].league_id}}">
+                                    {{future_leagues[loop.index0].name + " " + future_leagues[loop.index0].year|string}}
+                                </a>
                             </div>
                             <div class="col-xs-3 col-sm-3 col-content">
                                 Runda {{race.league_round + 1}} / {{future_leagues[loop.index0].rounds}}
