@@ -196,7 +196,11 @@
                 'ajax': {
                     'url': '/api/race-results/{{race.race_id}}',
                     'cache': true,
-                    'dataSrc': ''
+                    'dataSrc': '',
+                    "beforeSend": function(xhr){
+                        xhr.setRequestHeader("Authorization",
+                           "Basic " + btoa(localStorage.getItem('username') + ":" + localStorage.getItem('password')));
+                     }
                 },
                 'columns': [
                     {"data": "position"},

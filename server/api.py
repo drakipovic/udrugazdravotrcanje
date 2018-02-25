@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime, time
 
 from flask import request, jsonify, g
@@ -120,11 +121,30 @@ class RaceResultsEndpoint(Resource):
         return jsonify({"success": True, "race_result": dict(race_result)})
 
 
+class RegisterAnonymousUserForRaceEndpoint(Resource):
+
+    def post(self, race_id):
+        data = request.get_json()
+
+        name = data['name']
+        start_number = data['start_number']
+
+        name, surname = tuple(name.split())
+
+        user = User(username=name, password=str(uuid.uuid4()), name=name, surname=surname, approved=True)
+        user.save()
+
+        race_result = RaceResult(user.user_id, race_id, start_number=start_number)
+        race_result.save();
+        
+        return jsonify({"success": True})
+
+
 class NotApprovedUsersEndpoint(Resource):
 
     @auth.login_required
     def get(self):
-        users = [dict(user) for user in User.query.filter_by(approved = False)]
+        users = [dict(user) for user in User.query.filter_by(approved=False)]
 
         return jsonify(users)
 

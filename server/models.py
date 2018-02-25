@@ -202,12 +202,12 @@ class RaceResult(db.Model):
     race_id = db.Column(db.Integer, db.ForeignKey('races.race_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
-    def __init__(self, user_id, race_id, race_time=None, race_length=None):
+    def __init__(self, user_id, race_id, race_time=None, race_length=None, start_number=None):
         self.race_time = race_time
         self.race_length = race_length
         self.race_id = race_id
         self.user_id = user_id
-        self.start_number = len(Race.query.get(race_id).race_results) + 1
+        self.start_number = len(Race.query.get(race_id).race_results) + 1 if not start_number else start_number
     
     def __iter__(self):
         yield 'id', self.race_result_id

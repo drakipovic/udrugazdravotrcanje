@@ -26,8 +26,13 @@
 
     <section class="content">
         <div class="row">
-            <div class="col-sm-7">
+            <div class="col-sm-7 col-xs-12">
                 <div class="box box-danger">
+                    <div class="box-header with-border text-center">
+                        <h3 class="box-title">
+                            Unesi vrijeme trkača
+                        </h3>
+                    </div>
                     <div class="box-body">
                         <div class="row">
                             <div class="col-xs-12 col-sm-4">
@@ -53,12 +58,12 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-5">
+            <div class="col-sm-5 col-xs-12">
                 <div class="box box-danger">
                     <div class="box-header with-border text-center">
-                        <h3 class="box-title">
+                        <h3 id="countdown-title" class="box-title">
                             {% if race.start_time != None and not race.finished %}
-                                Do početka
+                                Do početka utrke
                             {% elif race.finished %}
                                 Utrka gotova
                             {% else %}
@@ -99,7 +104,7 @@
                         </div>
                         <div id="markFinished" class="text-center" hidden>
                             <div class="box-body">
-                                <button onclick="markRaceFinished({{race.race_id}})" type="submit" class="btn btn-danger">Postavi utrku kao gotovu <span class="glyphicon glyphicon-ok"/></span></button>
+                                <button onclick="markRaceFinished({{race.race_id}})" type="submit" class="btn btn-danger">Postavi utrku kao gotovu <span class="glyphicon glyphicon-ok"/></button>
                             </div>
                         </div>
                     {% endif %}
@@ -107,7 +112,30 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-7 col-xs-12">
+                <div class="box box-danger">
+                    <div class="box-header with-border text-center">
+                        <h3 class="box-title">Registriraj trkača za utrku</h3>
+                    </div>
+                    <div class="box-body">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <label for="name-surname">Ime i prezime</label>
+                                <input type="text" class="form-control" id="name-surname" placeholder="Ime Prezime">
+                            </div>
+                            <div class="form-group">
+                                <label for="start-number">Startni broj</label>
+                                <input type="number" class="form-control" id="start-number" placeholder="Startni broj">
+                            </div>
+                            <button onclick="registerRacer(event)" class="btn btn-success btn-flat">Registriraj</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        <div class="row">
+            <div class="col-sm-12 col-xs-12">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs pull-right">
                         <li class="active"><a href="#tab_1-1" data-toggle="tab">Rezultati</a></li>                        
@@ -149,7 +177,11 @@
                 'ajax': {
                     'url': '/api/race-results/{{race.race_id}}',
                     'cache': true,
-                    'dataSrc': ''
+                    'dataSrc': '',
+                    "beforeSend": function(xhr){
+                        xhr.setRequestHeader("Authorization",
+                           "Basic " + btoa(localStorage.getItem('username') + ":" + localStorage.getItem('password')));
+                     }
                 },
                 'columns': [
                     {"data": "position"},
@@ -172,7 +204,6 @@
                 method: 'PUT',
                 data: JSON.stringify(data),
                 success: function(data){
-                    console.log(data);
                     $('#resultsTable').DataTable().ajax.reload();
                 }
             })
@@ -197,11 +228,11 @@
                 }
 
                 if(finished){
-                    $(".box-title").text("Race finished");
+                    $("#countdown-title").text("Utrka završila");
                 }
                 else{
                     $("#markFinished").show();
-                    $(".box-title").text("Race started");
+                    $("#countdown-title").text("Utrka počela");
                 }
                 clearInterval(x);
             }
@@ -228,12 +259,33 @@
                 method: 'PUT',
                 data: JSON.stringify({"finished": true, "id": race_id}),
                 success: function(data){
-                    $(".box-title").text("Utrka gotova.");
+                    $("#countdown-title").text("Utrka gotova.");
                     $("#markFinished").hide();
                 }
 
             })
             
+        }
+
+        function registerRacer(e){
+            e.preventDefault();
+
+            var name = $("#name-surname").val();
+            var number = $("#start-number").val();
+
+            if(!name || !number) return;
+
+            window.callApi({
+                url: '/api/race-results/{{race.race_id}}/register',
+                method: 'POST',
+                data:  JSON.stringify({"name": name, "start_number": number}),
+                success: function(data){
+                    $('#resultsTable').DataTable().ajax.reload();
+                    $("#name-surname").val('');
+                    $("#start-number").val('');
+                }
+
+            })
         }
     </script>
     <script>
