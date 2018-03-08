@@ -13,6 +13,7 @@ api.add_resource(RegisterAnonymousUserForRaceEndpoint, '/race-results/<race_id>/
 api.add_resource(NotApprovedUsersEndpoint, '/users/not-approved')
 api.add_resource(ApproveUserEndpoint, '/users/<username>/approve')
 api.add_resource(LeagueEndpoint, '/leagues/<league_id>')
+api.add_resource(UsersEndpoint, '/users')
 
 
 if __name__ == '__main__':

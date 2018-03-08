@@ -44,6 +44,7 @@ class User(db.Model):
     role = db.Column(CoerceUTF8(40))
     approved = db.Column(db.Boolean)
     avatar_url = db.Column(CoerceUTF8(100))
+    manually_created = db.Column(db.Boolean)
 
     race_results = db.relationship('RaceResult', backref='user', lazy='select', cascade='all, delete, delete-orphan')
 
@@ -60,6 +61,7 @@ class User(db.Model):
         self.avatar_url = '/static/img/profile/{}/{}.png'.format(self.gender, randint(0, 2)) 
 
     def __iter__(self):
+        yield 'id', self.user_id
         yield 'username', self.username
         yield 'email', self.email
         yield 'full_name', self.full_name
@@ -77,14 +79,17 @@ class User(db.Model):
 
     @property
     def age(self):
-        return (date.today() - self.birthdate).days / 365
+        if self.birthdate:
+            return (date.today() - self.birthdate).days / 365
+        
+        return ""
     
     @property
     def full_name(self):
         if self.name and self.surname:
             return "{} {}".format(self.name.encode('utf-8'), self.surname.encode('utf-8'))
         
-        return None
+        return ""
     
     def save(self):
         db.session.add(self)
@@ -219,13 +224,24 @@ class RaceResult(db.Model):
         yield 'full_name', User.query.get(self.user_id).full_name
 
     def __eq__(self, other):
-        if self.race_time and other.race_time:
-            return self.race_time == other.race_time
+        if self.race_time and other.race_time and self.race_length and other.race_length:
+            return self.race_time == other.race_time and self.race_length == other.race_length
+        
+
 
     def __lt__(self, other):
         if self.race_time and other.race_time:
             return self.race_time < other.race_time
-
+        
+        if self.race_length and other.race_length:
+            return self.race_length < other.race_length
+        
+        if not self.race_time:
+            return False
+        
+        if not other.race_time:
+            return True
+        
     def save(self):
         db.session.add(self)
         db.session.commit()

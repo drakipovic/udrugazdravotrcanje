@@ -79,8 +79,10 @@ class RaceEndpoint(Resource):
 
 class RaceResultEndpoint(Resource):
 
-    @auth.login_required
     def put(self, race_result_id):
+        if g.user.role != 'admin':
+            return jsonify({"error": "No permission!"})
+        
         data = request.get_json()
 
         race_time = data['time']
@@ -98,8 +100,10 @@ class RaceResultEndpoint(Resource):
 
 class RaceResultsEndpoint(Resource):
 
-    @auth.login_required
     def get(self, race_id):
+        if g.user.role != 'admin':
+            return jsonify({"error": "No permission!"})
+
         race_results = [dict(race_result) for race_result in sorted(Race.query.get(race_id).race_results)]
         
         for i, race_result in enumerate(race_results):
@@ -115,10 +119,13 @@ class RaceResultsEndpoint(Resource):
         user_id = data['user_id']
         race_length = data['race_length']
 
-        race_result = RaceResult(race_length=race_length, race_id=race_id, user_id=user_id)
-        race_result.save()
+        race_result = RaceResult.query.filter_by(race_id=race_id, user_id=user_id).first()
 
-        return jsonify({"success": True, "race_result": dict(race_result)})
+        if not race_result:
+            race_result = RaceResult(race_length=race_length, race_id=race_id, user_id=user_id)
+            race_result.save()
+
+        return jsonify({"success": True})
 
 
 class RegisterAnonymousUserForRaceEndpoint(Resource):
@@ -128,13 +135,14 @@ class RegisterAnonymousUserForRaceEndpoint(Resource):
 
         name = data['name']
         start_number = data['start_number']
+        race_length = data['race_length']
 
         name, surname = tuple(name.split())
 
         user = User(username=name, password=str(uuid.uuid4()), name=name, surname=surname, approved=True)
         user.save()
 
-        race_result = RaceResult(user.user_id, race_id, start_number=start_number)
+        race_result = RaceResult(user.user_id, race_id, start_number=start_number, race_length=race_length)
         race_result.save();
         
         return jsonify({"success": True})
@@ -161,3 +169,11 @@ class ApproveUserEndpoint(Resource):
         user.save()
 
         return jsonify({"success": True})
+
+
+class UsersEndpoint(Resource):
+
+    def get(self):
+        users = [dict(user) for user in User.query.all()]
+
+        return jsonify(users)
