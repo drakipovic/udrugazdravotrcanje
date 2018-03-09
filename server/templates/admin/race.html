@@ -123,6 +123,23 @@
                                 <label for="name-surname">Ime i prezime</label>
                                 <input class="form-control" id="name-surname"/>
                             </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="gender">Spol</label>
+                                        <select class="form-control" id="gender">
+                                            <option value="M">Muško</option>
+                                            <option value="F">Žensko</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="birth-year">Godište</label>
+                                        <input class="form-control" id="birth-year"/>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="start-number">Startni broj</label>
                                 <input type="number" class="form-control" id="start-number" placeholder="Startni broj">
@@ -284,15 +301,22 @@
             var number = $("#start-number").val();
             var race_length = $("#race-category-register").val();
 
-            if(!name || !number || !race_length) return;
+            var gender = $("#gender").val();
+            var birthyear = $("#birth-year").val();
+
+            if(!name || !number || !race_length || !gender || !birthyear) return;
 
             var splitted = name.split(" ");
+
             if(isNaN(splitted[0])){
+
+                var data = {"name": name, "start_number": number, "race_length": race_length,
+                            "gender": gender, "birthyear": birthyear};
 
                 window.callApi({
                     url: '/api/race-results/{{race.race_id}}/register',
                     method: 'POST',
-                    data:  JSON.stringify({"name": name, "start_number": number, "race_length": race_length}),
+                    data:  JSON.stringify(data),
                     success: function(data){
                         $('#resultsTable').DataTable().ajax.reload();
                         $("#name-surname").val('');
@@ -351,6 +375,12 @@
                     enabled: true
                 },
                 maxNumberOfElements: 8,
+                onSelectItemEvent: function(){
+                    var user_data = $("#name-surname").getSelectedItemData();
+                    
+                    $("#gender").val(user_data.gender);
+                    $("#birth-year").val(new Date(user_data.birthdate).getFullYear())
+                }
             },
             placeholder: "Traži...",
             theme: "square"

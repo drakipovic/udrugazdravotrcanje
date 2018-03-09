@@ -136,10 +136,16 @@ class RegisterAnonymousUserForRaceEndpoint(Resource):
         name = data['name']
         start_number = data['start_number']
         race_length = data['race_length']
+        gender = data['gender']
+        birthyear = data['birthyear']
 
         name, surname = tuple(name.split())
 
-        user = User(username=name, password=str(uuid.uuid4()), name=name, surname=surname, approved=True)
+        birthdate = datetime(int(birthyear), 1, 1)
+
+        user = User(username=name, password=str(uuid.uuid4()), name=name, 
+                    surname=surname, approved=True, gender=gender, birthdate=birthdate)
+
         user.save()
 
         race_result = RaceResult(user.user_id, race_id, start_number=start_number, race_length=race_length)
