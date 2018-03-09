@@ -44,7 +44,6 @@ class User(db.Model):
     role = db.Column(CoerceUTF8(40))
     approved = db.Column(db.Boolean)
     avatar_url = db.Column(CoerceUTF8(100))
-    manually_created = db.Column(db.Boolean)
 
     race_results = db.relationship('RaceResult', backref='user', lazy='select', cascade='all, delete, delete-orphan')
 
