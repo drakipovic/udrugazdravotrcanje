@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, time
 
 from flask import request, jsonify, g
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 from models import League, Race, RaceCategory, RaceResult, User
 from main import auth
@@ -80,9 +80,6 @@ class RaceEndpoint(Resource):
 class RaceResultEndpoint(Resource):
 
     def put(self, race_result_id):
-        if g.user.role != 'admin':
-            return jsonify({"error": "No permission!"})
-        
         data = request.get_json()
 
         race_time = data['time']
@@ -101,10 +98,40 @@ class RaceResultEndpoint(Resource):
 class RaceResultsEndpoint(Resource):
 
     def get(self, race_id):
-        if g.user.role != 'admin':
-            return jsonify({"error": "No permission!"})
+        parser = reqparse.RequestParser()
+        parser.add_argument('gender')
+        parser.add_argument('category')
+        args = parser.parse_args()
 
-        race_results = [dict(race_result) for race_result in sorted(Race.query.get(race_id).race_results)]
+        gender = args.get('gender')
+        category = args.get('category')
+
+        if gender == 'null': gender = None
+        if category == 'null': category = None
+        
+        if gender and category:
+            race_results = [
+                dict(race_result) for race_result in sorted(
+                    RaceResult.query.join(Race, Race.race_id==race_id).join(User, User.user_id==RaceResult.user_id)
+                                    .filter(RaceResult.race_length==category, User.gender==gender).all())
+            ]
+        
+        elif gender and not category:
+            race_results = [
+                dict(race_result) for race_result in sorted(
+                    RaceResult.query.join(Race, Race.race_id==race_id).join(User, User.user_id==RaceResult.user_id)
+                                    .filter(User.gender==gender).all())
+            ]
+
+        elif category and not gender:
+            race_results = [
+                dict(race_result) for race_result in sorted(
+                    RaceResult.query.join(Race, Race.race_id==race_id).join(User, User.user_id==RaceResult.user_id)
+                                    .filter(RaceResult.race_length==category).all())
+            ]
+
+        else:
+            race_results = [dict(race_result) for race_result in sorted(Race.query.get(race_id).race_results)]
         
         for i, race_result in enumerate(race_results):
             if race_result.get('time', None):

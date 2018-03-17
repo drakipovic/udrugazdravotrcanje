@@ -226,7 +226,7 @@ class RaceResult(db.Model):
         if self.race_time and other.race_time and self.race_length and other.race_length:
             return self.race_time == other.race_time and self.race_length == other.race_length
         
-
+        return False
 
     def __lt__(self, other):
         if self.race_time and other.race_time:
@@ -240,6 +240,8 @@ class RaceResult(db.Model):
         
         if not other.race_time:
             return True
+        
+        return True
         
     def save(self):
         db.session.add(self)

@@ -1,4 +1,6 @@
 import os
+from datetime import timedelta
+
 
 class Config(object):
     SECRET_KEY = 'tajna'
@@ -6,6 +8,7 @@ class Config(object):
     TESTING = False
     WTF_CSRF_ENABLED = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+    PERMANENT_SESSION_LIFETIME = timedelta(days=100)
 
 
 class ProductionConfig(Config):

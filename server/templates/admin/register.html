@@ -138,11 +138,10 @@
             data: JSON.stringify(data),
             url: '/admin/register',
             success: function(data){
-                window.location = '/login'
+                window.location = '/'
             }.bind(this),
             error: function(xhr, status, err){
                 var response = JSON.parse(xhr.responseText);
-                console.log(response)
                 for(var i in response['errors']){
                   error = response['errors'][i];
                   for(var e in error){
