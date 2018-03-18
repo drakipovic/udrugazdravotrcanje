@@ -33,130 +33,131 @@
     </head>
 
     <body class="hold-transition skin-red-light sidebar-mini">
-        <header class="main-header">         
-            <a href="/" class="logo">
-                <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><img height="50" width="50" src="/static/img/logo.png"/></span>
-                <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b>Udruga Zdravo Trčanje</b></span>
-            </a>       
-            <nav class="navbar navbar-static-top">
-                <!-- Sidebar toggle button-->
-                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                    <span class="sr-only">Toggle navigation</span>
-                </a>
-                <!-- Navbar Right Menu -->
-                <div class="navbar-custom-menu">
-                    <ul class="nav navbar-nav">
-                        <li class="dropdown user user-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="{{g.user.avatar_url}}" class="user-image" alt="User Image">
-                                <span id="name-navbar" class="hidden-xs">{{g.user.name}} {{g.user.surname}}</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                            <!-- User image -->
-                                <li class="user-header">
-                                    <img src="{{g.user.avatar_url}}" class="img-circle" alt="User Image">
-                                    <p id="name-dropdown">{{g.user.name}} {{g.user.surname}}</p>
-                                </li>
-                                <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="/" class="btn btn-default btn-flat">Profil</a>
-                                    </div>
-                                    <div class="pull-right">
-                                        <a href="/logout" class="btn btn-default btn-flat">Odjavi se</a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
-        <aside class="main-sidebar">
-            <section class="sidebar">
-                <div class="user-panel">
-                    <div class="pull-left image">
-                        <img src="{{g.user.avatar_url}}" class="img-circle" alt="User Image">
+        <div class="wrapper">
+            <header class="main-header">         
+                <a href="/" class="logo">
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini"><img height="50" width="50" src="/static/img/logo.png"/></span>
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg"><b>Udruga Zdravo Trčanje</b></span>
+                </a>       
+                <nav class="navbar navbar-static-top">
+                    <!-- Sidebar toggle button-->
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <span class="sr-only">Toggle navigation</span>
+                    </a>
+                    <!-- Navbar Right Menu -->
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="{{g.user.avatar_url}}" class="user-image" alt="User Image">
+                                    <span id="name-navbar" class="hidden-xs">{{g.user.name}} {{g.user.surname}}</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                <!-- User image -->
+                                    <li class="user-header">
+                                        <img src="{{g.user.avatar_url}}" class="img-circle" alt="User Image">
+                                        <p id="name-dropdown">{{g.user.name}} {{g.user.surname}}</p>
+                                    </li>
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a href="/" class="btn btn-default btn-flat">Profil</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="/logout" class="btn btn-default btn-flat">Odjavi se</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="pull-left info">
-                        <p id="name-sidebar">{{g.user.name}} {{g.user.surname}}</p>
-                        <a href="/"><i class="fa fa-circle text-success"></i> Online</a>
+                </nav>
+            </header>
+            <aside class="main-sidebar">
+                <section class="sidebar">
+                    <div class="user-panel">
+                        <div class="pull-left image">
+                            <img src="{{g.user.avatar_url}}" class="img-circle" alt="User Image">
+                        </div>
+                        <div class="pull-left info">
+                            <p id="name-sidebar">{{g.user.name}} {{g.user.surname}}</p>
+                            <a href="/"><i class="fa fa-circle text-success"></i> Online</a>
+                        </div>
                     </div>
-                </div>
-                <form action="#" method="get" class="sidebar-form">
-                    <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="Search...">
-                        <span class="input-group-btn">
-                            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </span>
-                    </div>
-                </form>
-                {% if g.user.role == 'admin' %}
-                    <ul class="sidebar-menu" data-widget="tree">
-                        <li class="header">ADMIN TOOLS</li>
-                        
-                        <li><a href="/admin/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-                        <li><a href="/admin/leagues"><i class="fa fa-trophy"></i> <span>Lige</span></a></li>                    
-                        <li><a href="/admin/users">
-                            <i class="fa fa-users"></i> <span>Korisnici</span>
-                            <span class="pull-right-container">
-                                <span id="not-approved-users" class="label label-success pull-right">{{g.not_approved}}</span>
+                    <form action="#" method="get" class="sidebar-form">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                                    <i class="fa fa-search"></i>
+                                </button>
                             </span>
-                        </a></li>   
-                        <li><a href="/admin/register"><i class="fa fa-user-plus"></i> <span>Registriraj admina</span></a></li>                                     
+                        </div>
+                    </form>
+                    {% if g.user.role == 'admin' %}
+                        <ul class="sidebar-menu" data-widget="tree">
+                            <li class="header">ADMIN TOOLS</li>
+                            
+                            <li><a href="/admin/dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+                            <li><a href="/admin/leagues"><i class="fa fa-trophy"></i> <span>Lige</span></a></li>                    
+                            <li><a href="/admin/users">
+                                <i class="fa fa-users"></i> <span>Korisnici</span>
+                                <span class="pull-right-container">
+                                    <span id="not-approved-users" class="label label-success pull-right">{{g.not_approved}}</span>
+                                </span>
+                            </a></li>   
+                            <li><a href="/admin/register"><i class="fa fa-user-plus"></i> <span>Registriraj admina</span></a></li>                                     
 
+                        </ul>
+                    {% endif %}
+                    <ul class="sidebar-menu" data-widget="tree">
+                        <li class="header">MAIN NAVIGATION</li>
+                        
+                        <li><a href="/profile"><i class="fa fa-user"></i> <span>Profil</span></a></li>
+                        <li><a href="/races"><i class="fa fa-road"></i> <span>Utrke</span></a></li>
+                        
                     </ul>
-                {% endif %}
-                <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">MAIN NAVIGATION</li>
-                    
-                    <li><a href="/profile"><i class="fa fa-user"></i> <span>Profil</span></a></li>
-                    <li><a href="/races"><i class="fa fa-road"></i> <span>Utrke</span></a></li>
-                    
-                </ul>
 
-            </section>
-        </aside>
+                </section>
+            </aside>
 
-        {% block content %}
+            {% block content %}
 
-        {% endblock %}
+            {% endblock %}
 
-        <footer class="main-footer">
-            <div class="pull-right hidden-xs">
-                  <b>Version</b> 0.0.0
-            </div>
-            <strong>Copyright &copy; 2017-2018 <a href="https://drakipovic.github.io" target="_blank">Dino Rakipović</a>.</strong> All rights
-                reserved.
-        </footer>
+            <footer class="main-footer">
+                <div class="pull-right hidden-xs">
+                    <b>Version</b> 0.0.0
+                </div>
+                <strong>Copyright &copy; 2017-2018 <a href="https://drakipovic.github.io" target="_blank">Dino Rakipović</a>.</strong> All rights
+                    reserved.
+            </footer>
 
-    
-        <script src="/static/js/libs/jquery.js"></script>
-        <script src="/static/js/libs/bootstrap.js"></script>
-        <script src="/static/js/libs/adminlte.js"></script>
-        <script src="/static/js/libs/jquery.inputmask.js"></script>
-        <script src="/static/js/libs/jquery.inputmask.date.extensions.js"></script>
-        <script src="/static/js/libs/jquery.inputmask.extensions.js"></script>
-        <script src="/static/js/libs/jquery.easy-autocomplete.js"></script>
-        <script src="/static/js/libs/jquery.dataTables.js"></script>
-        <script src="/static/js/libs/dataTables.bootstrap.js"></script>
-        <script src="/static/js/libs/dataTables.responsive.min.js"></script>
-        <script src="/static/js/libs/responsive.bootstrap.min.js"></script>
-        <script src="/static/js/libs/bootstrap-confirmation.js"></script>
-        <script src="/static/js/custom/utils.js"></script>
-        <script>
-            $('[data-toggle=confirmation]').confirmation({
-            rootSelector: '[data-toggle=confirmation]',
-            // other options
-          });
-        </script>
-        {% block page_js %}
-            
-        {% endblock %}
+        
+            <script src="/static/js/libs/jquery.js"></script>
+            <script src="/static/js/libs/bootstrap.js"></script>
+            <script src="/static/js/libs/adminlte.js"></script>
+            <script src="/static/js/libs/jquery.inputmask.js"></script>
+            <script src="/static/js/libs/jquery.inputmask.date.extensions.js"></script>
+            <script src="/static/js/libs/jquery.inputmask.extensions.js"></script>
+            <script src="/static/js/libs/jquery.easy-autocomplete.js"></script>
+            <script src="/static/js/libs/jquery.dataTables.js"></script>
+            <script src="/static/js/libs/dataTables.bootstrap.js"></script>
+            <script src="/static/js/libs/dataTables.responsive.min.js"></script>
+            <script src="/static/js/libs/responsive.bootstrap.min.js"></script>
+            <script src="/static/js/libs/bootstrap-confirmation.js"></script>
+            <script src="/static/js/custom/utils.js"></script>
+            <script>
+                $('[data-toggle=confirmation]').confirmation({
+                rootSelector: '[data-toggle=confirmation]',
+                // other options
+            });
+            </script>
+            {% block page_js %}
+                
+            {% endblock %}
 
-
+        </div>
     </body>
 </html>
