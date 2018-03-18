@@ -5,6 +5,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.types import TypeDecorator, Unicode, UnicodeText
 
 from main import db
+from calculate_race_points import RacePoints
+
 
 class CoerceUTF8(TypeDecorator):
     """Safely coerce Python bytestrings to Unicode
@@ -212,7 +214,7 @@ class RaceResult(db.Model):
         self.race_id = race_id
         self.user_id = user_id
         self.start_number = len(Race.query.get(race_id).race_results) + 1 if not start_number else start_number
-    
+        
     def __iter__(self):
         yield 'id', self.race_result_id
         yield 'position', '-'
@@ -221,6 +223,7 @@ class RaceResult(db.Model):
         yield 'race_length', self.race_length
         yield 'start_number', self.start_number
         yield 'full_name', User.query.get(self.user_id).full_name
+        yield 'points', RacePoints().calculate(User.query.get(self.user_id), self) if self.race_time else '-'
 
     def __eq__(self, other):
         if self.race_time and other.race_time and self.race_length and other.race_length:

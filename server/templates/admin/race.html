@@ -207,6 +207,7 @@
                                         <th>Vrijeme</th>
                                         <th>Kategorija</th>
                                         <th>Startni broj</th>
+                                        <th>Bodovi</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -223,14 +224,25 @@
 {% endblock %}
 
 {% block page_js %}
+    <script src="/static/js/libs/dataTables.buttons.min.js"></script>
+    <script src="/static/js/libs/buttons.flash.min.js"></script>
+    <script src="/static/js/libs/jszip.min.js"></script>
+    <script src="/static/js/libs/pdfmake.min.js"></script>
+    <script src="/static/js/libs/vfs_fonts.js"></script>
+    <script src="/static/js/libs/buttons.html5.min.js"></script>
+    <script src="/static/js/libs/buttons.print.min.js"></script>
+
     <script>
         $("#race-time").inputmask('hh:mm:ss', { 'placeholder': 'hh:mm:ss'});
     </script>
     <script>
         $(function () {
             $('#resultsTable').DataTable({
+                'dom': 'Bfrtip',
+                'buttons': [
+                    'excel', 'pdf', 'print'
+                ],
                 'responsive': true,
-                'ordering': false,
                 'ajax': {
                     'url': '/api/race-results/{{race.race_id}}',
                     'cache': true,
@@ -241,12 +253,13 @@
                      }
                 },
                 'columns': [
-                    {"data": "position"},
-                    {"data": "full_name"},
-                    {"data": "time"},
-                    {"data": "race_length"},
-                    {"data": "start_number"},
-                ]
+                    {"data": "position", "orderable": false},
+                    {"data": "full_name", "orderable": false},
+                    {"data": "time", "orderable": false},
+                    {"data": "race_length", "orderable": false},
+                    {"data": "start_number", "orderable": false},
+                    {"data": "points"},
+                ],
             });
         });
 
