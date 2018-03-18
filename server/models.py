@@ -223,7 +223,7 @@ class RaceResult(db.Model):
         yield 'race_length', self.race_length
         yield 'start_number', self.start_number
         yield 'full_name', User.query.get(self.user_id).full_name
-        yield 'points', RacePoints().calculate(User.query.get(self.user_id), self) if self.race_time else '-'
+        yield 'points', RacePoints().calculate(User.query.get(self.user_id), self, Race.query.get(self.race_id)) if self.race_time else '-'
 
     def __eq__(self, other):
         if self.race_time and other.race_time and self.race_length and other.race_length:

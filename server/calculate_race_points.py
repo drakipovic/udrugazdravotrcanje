@@ -1,7 +1,6 @@
 import os
 import yaml
 
-
 handicaps_filename = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'handicaps.yaml')
 
 
@@ -14,9 +13,11 @@ class RacePoints(object):
         with open(handicaps_filename) as f:
             return yaml.load(f)
 
-    def calculate(self, user, race_result):
+    def calculate(self, user, race_result, race):
 
-        age = user.age
+        start_time = race.start_time
+        age = (start_time.date() - user.birthdate).days / 365
+
         gender = user.gender
         race_length = race_result.race_length
         race_time = race_result.race_time
