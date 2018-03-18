@@ -112,21 +112,21 @@ class RaceResultsEndpoint(Resource):
         if gender and category:
             race_results = [
                 dict(race_result) for race_result in sorted(
-                    RaceResult.query.join(Race, Race.race_id==race_id).join(User, User.user_id==RaceResult.user_id)
+                    RaceResult.query.join(Race, RaceResult.race_id==race_id).join(User, User.user_id==RaceResult.user_id)
                                     .filter(RaceResult.race_length==category, User.gender==gender).all())
             ]
         
         elif gender and not category:
             race_results = [
                 dict(race_result) for race_result in sorted(
-                    RaceResult.query.join(Race, Race.race_id==race_id).join(User, User.user_id==RaceResult.user_id)
+                    RaceResult.query.join(Race, RaceResult.race_id==race_id).join(User, User.user_id==RaceResult.user_id)
                                     .filter(User.gender==gender).all())
             ]
 
         elif category and not gender:
             race_results = [
                 dict(race_result) for race_result in sorted(
-                    RaceResult.query.join(Race, Race.race_id==race_id).join(User, User.user_id==RaceResult.user_id)
+                    RaceResult.query.join(Race, RaceResult.race_id==race_id).join(User, User.user_id==RaceResult.user_id)
                                     .filter(RaceResult.race_length==category).all())
             ]
 
