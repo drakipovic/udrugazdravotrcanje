@@ -35,5 +35,5 @@ class RacePoints(object):
 
         points = predefined_time / (race_time_minutes * ((100 - percentage) / 100))
 
-        return "{0:.2f}".format(points*100)
+        return float("{0:.2f}".format(points*100))
 

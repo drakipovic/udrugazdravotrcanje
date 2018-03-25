@@ -72,6 +72,12 @@ class User(db.Model):
         yield 'role', self.role
         yield 'approved', self.approved
 
+    def __eq__(self, other):
+        return self.user_id == other.user_id
+
+    def __hash__(self):
+        return hash(self.user_id)
+        
     def _set_password(self, password):
         return generate_password_hash(password)
 

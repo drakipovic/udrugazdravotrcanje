@@ -23,7 +23,11 @@
             
                             <h3 class="profile-username text-center">{{user.name}} {{user.surname}}</h3>
             
-                            <p class="text-muted text-center">Trkač</p>
+                            <p class="text-muted text-center">
+                                {% if user.role == 'admin' %}
+                                  Admin
+                                {% endif %}
+                            </p>
             
                             <ul class="list-group list-group-unbordered">
                                 <li class="list-group-item">
@@ -47,6 +51,7 @@
                                     <span class="pull-right">{{ user.race_results|length }}</span>
                                 </li>
                             </ul>
+                            <button class="btn btn-block btn-success"><b>Uredi</b></button>
                         </div>
                     </div>
                 </div>

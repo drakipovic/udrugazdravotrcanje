@@ -8,7 +8,7 @@
         <h1>
             {{race.league_round + 1}}. race from {{league.name}} {{league.year}}
             {% if race.start_time != None and not race.finished  %}
-                <small>Počinje {{race.start_time}}</small>
+                <small>Počinje {{race.start_time|datetime}}</small>
             {% elif race.finished %}
                 <small>Utrka gotova.</small>
             {% else %}
@@ -26,44 +26,7 @@
 
     <section class="content">
         <div class="row">
-            <div class="col-sm-7 col-xs-12">
-                <div class="box box-danger">
-                    <div class="box-header with-border text-center">
-                        <h3 class="box-title">
-                            Unesi vrijeme trkača
-                        </h3>
-                    </div>
-                    <div class="box-body">
-                        <form class="form">
-                            <div class="form-group">
-                                <label for="name-surname">Ime i prezime</label>
-                                <input class="form-control" id="search-runners"/>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label for="race-time">Vrijeme trkača</label>
-                                        <input id="race-time" class="form-control" placeholder="Unesi vrijeme" data-mask/>
-                                    </div>
-                                </div>
-                                <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label for="race-category">Odaberi kategoriju</label>
-                                        <select id="race-category" class="form-control">
-                                            <option value='default' selected disabled>Kategorija</option>
-                                            {% for category in league.race_categories %}
-                                                <option value="{{category.race_length}}">{{category.race_length}} km</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <button onclick="setTime(event)" class="btn btn-success btn-flat">Unesi <i class="fa fa-check"></i></button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-5 col-xs-12">
+            <div class="col-sm-6 col-sm-offset-3 col-xs-12">
                 <div class="box box-danger">
                     <div class="box-header with-border text-center">
                         <h3 id="countdown-title" class="box-title">
@@ -117,10 +80,57 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-7 col-xs-12">
+            <div class="col-sm-6 col-xs-12">
+                <div class="box box-danger">
+                    <div class="box-header with-border text-center">
+                        <h3 class="box-title">
+                            Unesi vrijeme trkača
+                        </h3>
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <form class="form">
+                            <div class="form-group">
+                                <label for="name-surname">Ime i prezime</label>
+                                <input class="form-control" id="search-runners"/>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="race-time">Vrijeme trkača</label>
+                                        <input id="race-time" class="form-control" placeholder="Unesi vrijeme" data-mask/>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="race-category">Odaberi kategoriju</label>
+                                        <select id="race-category" class="form-control">
+                                            <option value='default' selected disabled>Kategorija</option>
+                                            {% for category in league.race_categories %}
+                                                <option value="{{category.race_length}}">{{category.race_length}} km</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="setTime(event)" class="btn btn-success btn-flat">Unesi <i class="fa fa-check"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xs-12">
                 <div class="box box-danger">
                     <div class="box-header with-border text-center">
                         <h3 class="box-title">Registriraj trkača za utrku</h3>
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="box-body">
                         <form class="form">

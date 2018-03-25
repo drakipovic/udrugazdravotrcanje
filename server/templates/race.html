@@ -6,9 +6,9 @@
             <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                {{race.league_round + 1}}. race from {{league.name}} {{league.year}}
+                {{race.league_round + 1}}. utrka {{league.name}} {{league.year}}
                 {% if race.start_time != None and not race.finished  %}
-                    <small>Kreće {{race.start_time}}</small>
+                    <small>Kreće {{race.start_time|datetime}}</small>
                 {% elif race.finished %}
                     <small>Utrka gotova.</small>
                 {% else %}
@@ -108,6 +108,31 @@
                         <div class="box box-danger">
                             <div class="box-header">
                                 <h3 class="box-title">Rezultati</h3>
+                                <form class="form">
+                                    <div class="row">
+                                        <div class="form-group col-xs-6 col-sm-offset-4 col-sm-2">
+                                            <select id="category-filter" class="form-control">
+                                                <option value="default" selected disabled>Kategorija</option>
+                                                {% for category in league.race_categories %}
+                                                    <option value="{{category.race_length}}">{{category.race_length}} km</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-xs-6 col-sm-1">
+                                            <select id="gender-filter" class="form-control">
+                                                <option value="default" selected disabled>Spol</option>
+                                                <option value="M">Muški</option>
+                                                <option value="F">Žene</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-1">
+                                            <button onclick="filter(event)" type="button" class="btn btn-success btn-flat">Filtriraj</button>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-1">
+                                            <button onclick="removeFilter(event)" type="button" class="btn btn-warning btn-flat">Poništi filter</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                             <div class="box-body">
                                 <table id="resultsTable" class="table table-bordered">
@@ -118,6 +143,7 @@
                                             <th>Vrijeme</th>
                                             <th>Kategorija</th>
                                             <th>Startni broj</th>
+                                            <th>Bodovi</th>
                                         </tr>
                                     </thead>
                                     
@@ -191,8 +217,8 @@
     <script>
         $(function () {
             $('#resultsTable').DataTable({
+                'dom': 'Bfrtip',
                 'responsive': true,
-                'ordering': false,
                 'ajax': {
                     'url': '/api/race-results/{{race.race_id}}',
                     'cache': true,
@@ -203,13 +229,38 @@
                      }
                 },
                 'columns': [
-                    {"data": "position"},
-                    {"data": "full_name"},
+                    {"data": "position", "orderable": false},
+                    {"data": "full_name", "orderable": false},
                     {"data": "time"},
-                    {"data": "race_length"},
-                    {"data": "start_number"},
-                ]
+                    {"data": "race_length", "orderable": false},
+                    {"data": "start_number", "orderable": false},
+                    {"data": "points"},
+                ],
             });
         });
+    </script>
+    <script>
+        function filter(event){
+            event.preventDefault();
+            
+            var gender = $("#gender-filter").val();
+            var category = $("#category-filter").val();
+
+            if(!gender && !category) return;
+
+            $('#resultsTable').DataTable().ajax.url('/api/race-results/{{race.race_id}}?gender=' + gender + '&category=' + category);
+            $('#resultsTable').DataTable().ajax.reload()
+        }
+
+        function removeFilter(event){
+            event.preventDefault();
+
+            $("#gender-filter").val('');
+            $("#category-filter").val('');
+
+            $('#resultsTable').DataTable().ajax.url('/api/race-results/{{race.race_id}}');
+            $('#resultsTable').DataTable().ajax.reload()
+
+        }
     </script>
 {% endblock %}

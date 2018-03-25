@@ -152,7 +152,7 @@ class RaceResultsEndpoint(Resource):
             race_result = RaceResult(race_length=race_length, race_id=race_id, user_id=user_id)
             race_result.save()
 
-        return jsonify({"success": True})
+        return jsonify({"success": True, "race_result": dict(race_result)})
 
 
 class RegisterAnonymousUserForRaceEndpoint(Resource):

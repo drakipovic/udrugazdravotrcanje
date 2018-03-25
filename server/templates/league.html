@@ -11,13 +11,98 @@
             </h1>
             <ol class="breadcrumb">
                 <li><a href="/profile"><i class="fa fa-dashboard"></i> Profil</a></li>
-                <li><a href="/leagues/"><i class="fa fa-trophy"></i> Lige</a></li>
+                <li><a href="/leagues"><i class="fa fa-trophy"></i> Lige</a></li>
                 <li class="active">Liga</li>
             </ol>
         </section>
 
         <section class="content">
             <div class="container-fluid">
+                <div class="progress-group">
+                    <span class="progress-text">Gotovih utrka</span>
+                    <span class="progress-number"><b>{{done}}</b>/{{league.rounds}}</span>
+
+                    <div class="progress lg" style="background-color: white;">
+                        <div class="progress-bar progress-bar-green" style="width: {{done * 100 / league.rounds}}%;"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <div class="nav-tabs-custom">
+                                <ul class="nav nav-tabs pull-right">
+                                    <li class="active"><a href="#tab_1" data-toggle="tab">Poredak</a></li>
+                                    <li><a href="#tab_2" data-toggle="tab">Utrke</a></li>
+                                  
+                                    <li class="pull-left header"><i class="fa fa-flag-checkered"></i> Statistike</li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_1">
+                                        <div class="table-responsive no-padding">
+                                            <table class="table table-striped">
+                                                <tr>
+                                                    <th>Pozicija</th>
+                                                    <th>Ime</th>
+                                                    <th>Otrčanih utrka</th>
+                                                    <th>Bodovi</th>
+                                                </tr>
+                                                {% if league_points %}
+                                                    <tr class="bg-yellow disabled">
+                                                        <td>1</td>
+                                                        <td>
+                                                            <a style="color: white" href="/profile/{{league_points[0][1].user.username}}">
+                                                                {{league_points[0][1].user.full_name}}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{league_points[0][1].races}}</td>
+                                                        <td>{{league_points[0][1].points}}</td>
+                                                    </tr>
+                                                {% endif %}
+                                                {% for user_points in league_points[1:] %}
+                                                    <tr>
+                                                        <td>{{loop.index+1}}</td>
+                                                        <td>
+                                                            <a href="/profile/{{user_points[1].user.username}}">
+                                                                {{user_points[1].user.full_name}}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{user_points[1].races}}</td>
+                                                        <td>{{user_points[1].points}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_2">
+                                        <div class="table-responsive no-padding">
+                                            <table class="table table-hover">
+                                                <tr>
+                                                    <th>Kolo</th>
+                                                    <th>Status</th>
+                                                    <th>Datum</th>
+                                                    <th>Trkača</th>
+                                                </tr>
+                                                {% for race in league.races %}
+                                                    {% if race.start_time %}
+                                                        <tr onclick="window.location='/races/{{race.race_id}}'" class="clickable">
+                                                            <td>{{race.league_round+1}}</td>
+                                                            <td>
+                                                                <span class="label label-{{'success' if race.finished else 'danger'}}">
+                                                                    {{"Završeno" if race.finished else "Nezavršeno"}}
+                                                                </span>
+                                                            </td>
+                                                            <td>{{race.start_time|datetime}}</td>
+                                                            <td>{{race.race_results|length}}</td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </section>

@@ -4,6 +4,7 @@ from flask import render_template, request, redirect, jsonify, url_for, session,
 
 from main import app
 from models import User, League, Race, RaceResult
+from calculate_race_points import RacePoints
 
 
 @app.before_request
@@ -223,13 +224,49 @@ def race(race_id):
                                 my_result=my_result, race_results=race_results)
 
 
+@app.route('/leagues')
+def leagues():
+    leagues = League.query.all()
+
+    done = [sum(race.finished == True for race in league.races) for league in leagues]
+
+    return render_template('leagues.html', leagues=leagues, done=done)
+
 @app.route('/leagues/<league_id>')
 def league(league_id):
     league = League.query.get(league_id)
 
-    return render_template('league.html', league=league)
+    done = sum([race.finished == True for race in league.races])
+
+    league_points = {}
+    rp = RacePoints()
+
+    for race in league.races:
+        if race.start_time:
+            for result in race.race_results:
+                if result.race_time:
+                    user = User.query.get(result.user_id)
+                    if league_points.get(result.user_id, None):
+                        league_points[result.user_id]['points'] += rp.calculate(user, result, race)
+                        league_points[result.user_id]['races'] += 1
+                    else:
+                        league_points[result.user_id] = {}
+                        league_points[result.user_id]['points'] = rp.calculate(user, result, race)
+                        league_points[result.user_id]['user'] = dict(user)
+                        league_points[result.user_id]['races'] = 1
+
+    print sorted(league_points.iteritems(), key=lambda (x, y): y['points'], reverse=True)
+
+    return render_template('league.html', league=league, done=done, 
+                            league_points=sorted(league_points.iteritems(), key=lambda (x, y): y['points'], reverse=True))
 
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+
+@app.template_filter('datetime')
+def _jinja2_filter_datetime(datetime, fmt=None):
+    format='%d.%m.%Y %H:%M'
+    return datetime.strftime(format) 
