@@ -94,7 +94,7 @@ class User(db.Model):
     @property
     def full_name(self):
         if self.name and self.surname:
-            return "{} {}".format(self.name.encode('utf-8'), self.surname.encode('utf-8'))
+            return u"{} {}".format(self.name, self.surname)
         
         return ""
     
