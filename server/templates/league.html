@@ -81,7 +81,7 @@
                                                     <th>Datum</th>
                                                     <th>Trkača</th>
                                                 </tr>
-                                                {% for race in league.races %}
+                                                {% for race in races %}
                                                     {% if race.start_time %}
                                                         <tr onclick="window.location='/races/{{race.race_id}}'" class="clickable">
                                                             <td>{{race.league_round+1}}</td>

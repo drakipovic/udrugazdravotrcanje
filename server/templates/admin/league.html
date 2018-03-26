@@ -34,7 +34,7 @@
                                     <th>Gotovo</th>
                                     <th>Akcije</th>
                                 </tr>
-                                {% for race in league.races %}
+                                {% for race in races %}
                                     {% set race_data = dict(race) %}
                                     <tr>
                                         <td><a href="/admin/races/{{race_data.id}}">Utrka {{race_data.round + 1}}</a></td>

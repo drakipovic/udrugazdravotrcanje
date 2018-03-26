@@ -174,7 +174,7 @@ def admin_leagues():
 @app.route('/admin/leagues/<int:league_id>')
 def admin_league(league_id):
     league = League.query.get(league_id)
-    return render_template('admin/league.html', league=league)
+    return render_template('admin/league.html', league=league, races=sorted(league.races, key=lambda (x): x.race_id))
 
 
 @app.route('/admin/races/<race_id>')
@@ -228,7 +228,7 @@ def race(race_id):
 def leagues():
     leagues = League.query.all()
 
-    done = [sum(race.finished == True for race in league.races) for league in leagues]
+    done = [sum(race.finished == True for race in sorted(league.races, key=lambda (x): x.race_id)) for league in leagues]
 
     return render_template('leagues.html', leagues=leagues, done=done)
 
@@ -236,12 +236,12 @@ def leagues():
 def league(league_id):
     league = League.query.get(league_id)
 
-    done = sum([race.finished == True for race in league.races])
+    done = sum([race.finished == True for race in sorted(league.races, key=lambda (x): x.race_id)])
 
     league_points = {}
     rp = RacePoints()
 
-    for race in league.races:
+    for race in sorted(league.races, key=lambda (x): x.race_id):
         if race.start_time:
             for result in race.race_results:
                 if result.race_time:
@@ -257,7 +257,7 @@ def league(league_id):
 
     print sorted(league_points.iteritems(), key=lambda (x, y): y['points'], reverse=True)
 
-    return render_template('league.html', league=league, done=done, 
+    return render_template('league.html', league=league, done=done, races=sorted(league.races, key=lambda (x): x.race_id),
                             league_points=sorted(league_points.iteritems(), key=lambda (x, y): y['points'], reverse=True))
 
 
