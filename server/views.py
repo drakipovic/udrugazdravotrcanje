@@ -205,7 +205,7 @@ def profile(username=None):
         results.append({
             'league': u"{} {}".format(league.name, league.year),
             'league_id': league.league_id,
-            'round': race.league_round,
+            'round': race.league_round + 1,
             'race_id': race.race_id,
             'start_time': race.start_time,
             'time': result.race_time,
