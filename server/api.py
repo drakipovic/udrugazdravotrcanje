@@ -170,7 +170,7 @@ class RegisterAnonymousUserForRaceEndpoint(Resource):
 
         birthdate = datetime(int(birthyear), 1, 1)
 
-        user = User(username=name, password=str(uuid.uuid4()), name=name, 
+        user = User(username="{}.{}{}".format(name, surname, birthyear), password=str(uuid.uuid4()), name=name, 
                     surname=surname, approved=True, gender=gender, birthdate=birthdate)
 
         user.save()

@@ -16,7 +16,7 @@
 
         <section class="content">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-4 col-xs-12">
                     <div class="box box-danger">
                         <div class="box-body box-profile">
                             <img class="profile-user-img img-responsive img-circle" src="{{user.avatar_url}}" alt="User profile picture">
@@ -31,7 +31,7 @@
             
                             <ul class="list-group list-group-unbordered">
                                 <li class="list-group-item">
-                                    <b>Email</b> <span class="pull-right">{{user.email}}</span>
+                                    <b>Email</b> <span class="pull-right">{{user.email|default('-', true)}}</span>
                                 </li>
                                 <li class="list-group-item">
                                     <b>Rodendan</b> <span class="pull-right">{{user.birthdate}}</span>
@@ -51,11 +51,59 @@
                                     <span class="pull-right">{{ user.race_results|length }}</span>
                                 </li>
                             </ul>
-                            <button class="btn btn-block btn-success"><b>Uredi</b></button>
+                            {% if g.user == user %}
+                                <button class="btn btn-block btn-success"><b>Uredi</b></button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8 col-xs-12">
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <div class="box-title">
+                                Popis utrka na kojima je korisnik sudjelovao
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <table id="user-races" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Liga</th>
+                                        <th>Kolo</th>
+                                        <th>Vrijeme</th>
+                                        <th>Kategorija</th>
+                                        <th>Datum</th>
+                                        <th>Bodovi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for result in race_results %}
+                                        <tr>
+                                            <td><a href="/leagues/{{result.league_id}}">{{result.league}}</a></td>
+                                            <td><a href="/races/{{result.race_id}}">{{result.round}}</a></td>
+                                            <td>{{result.time|default('-', true)}}</td>
+                                            <td>{{result.length}} km</td>
+                                            <td>{{result.start_time|datetime}}</td>
+                                            <td><span class="label label-success">{{result.points}}</span></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
     </div>
+{% endblock %}
+
+{% block page_js %}
+
+<script>
+    $("#user-races").DataTable({
+        responsive: true,
+        searching: false
+    });
+</script>
+
 {% endblock %}

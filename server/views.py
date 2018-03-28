@@ -193,8 +193,27 @@ def profile(username=None):
         user = g.user
     else:
         user = User.query.filter_by(username=username).first()
+    
+    race_results = RaceResult.query.filter_by(user_id=user.user_id).all()
+    results = []
+    rp = RacePoints()
 
-    return render_template('profile.html', user=user)
+    for result in race_results:
+        race = Race.query.get(result.race_id)
+        league = League.query.get(race.league_id)
+
+        results.append({
+            'league': "{} {}".format(league.name, league.year),
+            'league_id': league.league_id,
+            'round': race.league_round,
+            'race_id': race.race_id,
+            'start_time': race.start_time,
+            'time': result.race_time,
+            'length': result.race_length,
+            'points': rp.calculate(user, result, race) if result.race_time else '-'
+        })
+    
+    return render_template('profile.html', user=user, race_results=results)
 
 
 @app.route('/races')
