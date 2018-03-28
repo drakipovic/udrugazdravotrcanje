@@ -203,7 +203,7 @@ def profile(username=None):
         league = League.query.get(race.league_id)
 
         results.append({
-            'league': "{} {}".format(league.name, league.year),
+            'league': u"{} {}".format(league.name, league.year),
             'league_id': league.league_id,
             'round': race.league_round,
             'race_id': race.race_id,
