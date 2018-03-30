@@ -31,13 +31,13 @@
             
                             <ul class="list-group list-group-unbordered">
                                 <li class="list-group-item">
-                                    <b>Email</b> <span class="pull-right">{{user.email|default('-', true)}}</span>
+                                    <b>Email</b> <span id="profile-email" class="pull-right">{{user.email|default('-', true)}}</span>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Rodendan</b> <span class="pull-right">{{user.birthdate}}</span>
+                                    <b>Rođendan</b> <span id="profile-birthdate" class="pull-right">{{user.birthdate|date}}</span>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Potvrden</b> 
+                                    <b>Potvrđen</b> 
                                     <span class="pull-right">
                                         {% if user.approved %}
                                             <i class="fa fa-check bg-green"></i>
@@ -52,7 +52,7 @@
                                 </li>
                             </ul>
                             {% if g.user == user %}
-                                <button class="btn btn-block btn-success"><b>Uredi</b></button>
+                                <button type="button" data-toggle="modal" data-target="#edit-modal" class="btn btn-block btn-success"><b>Uredi</b></button>
                             {% endif %}
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                         <div class="box-body">
                             <table id="user-races" class="table table-condensed">
                                 <thead>
-                                    <tr>
+                                    <tr style="background: #00a65a; color: white">
                                         <th>Liga</th>
                                         <th>Kolo</th>
                                         <th>Vrijeme</th>
@@ -93,6 +93,62 @@
                     </div>
                 </div>
             </div>
+            <div class="modal modal-default fade" id="edit-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Uredi osobne podatke</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div id="old-password-group" class="form-group has-feedback">
+                                    <input type="password" class="form-control" id="old-password" placeholder="Stara lozinka"/>
+                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                    <span id="old-password-error" class="help-block"></span>
+                                </div>
+                                <div id="password-group" class="form-group has-feedback">
+                                    <input type="password" class="form-control" id="password" placeholder="Promjeni lozinku"/>
+                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                    <span id="password-error" class="help-block"></span>
+                                </div>
+                                <div id="password-again-group" class="form-group has-feedback">
+                                    <input type="password" class="form-control" id="password-again" placeholder="Potvrdi lozinku"/>
+                                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                    <span id="password-again-error" class="help-block"></span>
+                                </div>
+                                <div id="email-group" class="form-group has-feedback">
+                                    <input type="text" class="form-control" id="email" placeholder="Promjeni email" value="{{user.email}}"/>
+                                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                                    <span id="email-error" class="help-block email-error"></span>
+                                </div>                         
+                                <div id="birthdate-group" class="form-group has-feedback">
+                                    <div class="input-group">
+                                        <input type="text" id="birthdate" value="{{user.birthdate|date}}" class="form-control" placeholder="Promijeni datum rodenja" data-inputmask="'alias': 'dd-mm-yyyy'" data-mask>
+                                        <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                </div>
+                                <span id="birthdate-error" class="help-block"></span>
+                            </form>
+                            <div class="text-muted">
+                                Ako se lozinka ne želi promijeniti, samo se ta polja ostave prazna.
+                            </div>
+
+                            <div id="feedback" class="callout callout-success" hidden>
+                                <div class="text-center">
+                                    <h4><i class="fa fa-check"></i> Promjene uspješno spremljene!</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal">Zatvori</button>
+                            <button type="button" onclick="editUser(event)" class="btn btn-flat btn-success">Spremi promjene</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 {% endblock %}
@@ -100,10 +156,67 @@
 {% block page_js %}
 
 <script>
+    $('#birthdate').inputmask('dd-mm-yyyy', { 'placeholder': 'dd-mm-yyyy' });
+    
     $("#user-races").DataTable({
         responsive: true,
         searching: false
     });
+
+    $('#edit-modal').on('hidden.bs.modal', function () {
+        location.reload();
+    })
+
+    function editUser(e){
+        $("#feedback").hide();
+        e.preventDefault();
+        ids = ['old-password', 'password', 'password-again', 'email', 'birthdate'];
+        for(var i=0; i < ids.length; ++i){
+            $("#"+ids[i]+"-error").text('');
+            $("#" +ids[i]+ "-group").removeClass('has-error');
+        }
+        var oldPassword = $("#old-password").val();
+        var password = $("#password").val();
+        var passwordAgain = $("#password-again").val();
+        var email = $("#email").val();
+        var birthdate = $("#birthdate").val();
+
+        if(password != passwordAgain){
+            $("#password-again-error").text('Lozinke moraju biti iste!');
+            $("#password-again-group").attr('class', $("#password-again-group").attr('class') + ' has-error');
+            return;
+        }
+
+        var data = {"old-password": oldPassword, "password": password, "email": email, "birthdate": birthdate};
+        
+        $.ajax({
+            method: 'PUT',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            url: '/api/users/{{user.user_id}}',
+            username: localStorage.getItem('username'),
+            password: localStorage.getItem('password'),
+            success: function(data){
+                $("#feedback").show();
+                $("#profile-email").val(data['user']['email']);
+                $("#profile-birthdate").val(data['user']['birthdate']);
+                
+                if(password) localStorage.setItem('password', password);
+            }.bind(this),
+            error: function(xhr, status, err){
+                var response = JSON.parse(xhr.responseText);
+                
+                for(var i in response['errors']){
+                    error = response['errors'][i];
+                    for(var e in error){
+                        $("#" + e + "-error").text(error[e]);
+                        $("#" + e + "-group").attr('class', $("#" + e + "-group").attr('class') + ' has-error');
+                    }
+                }
+            }.bind(this)
+        })
+    }
 </script>
 
 {% endblock %}

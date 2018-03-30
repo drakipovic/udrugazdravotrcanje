@@ -29,8 +29,11 @@
                                     {{future_leagues[loop.index0].name + " " + future_leagues[loop.index0].year|string}}
                                 </a>
                             </div>
-                            <div class="col-xs-6 col-sm-3 col-content">
-                                Runda {{race.league_round + 1}} / {{future_leagues[loop.index0].rounds}}
+                            <div class="col-sm-3 col-content hidden-xs">
+                                Runda {{race.league_round + 1}} / {{past_leagues[loop.index0].rounds}}
+                            </div>
+                            <div class="col-xs-6 hidden-sm hidden-md hidden-lg text-center">
+                                Runda {{race.league_round + 1}} / {{past_leagues[loop.index0].rounds}}
                             </div>
                             <div class="col-xs-6 col-sm-3 col-content">
                                 {{race.start_time|datetime}}
@@ -58,7 +61,10 @@
                                         {{past_leagues[loop.index0].name + " " + past_leagues[loop.index0].year|string}}
                                     </a>
                             </div>
-                            <div class="col-xs-6 col-sm-3 col-content">
+                            <div class="col-sm-3 col-content hidden-xs">
+                                Runda {{race.league_round + 1}} / {{past_leagues[loop.index0].rounds}}
+                            </div>
+                            <div class="col-xs-6 hidden-sm hidden-md hidden-lg text-center">
                                 Runda {{race.league_round + 1}} / {{past_leagues[loop.index0].rounds}}
                             </div>
                             <div class="col-xs-6 col-sm-3 col-content">

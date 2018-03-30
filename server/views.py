@@ -47,10 +47,10 @@ def login():
         
         user = User.query.filter_by(username=username).first()
         if user is None:
-            return jsonify({'username': 'User not found!'}), 401
+            return jsonify({'username': 'Korisnik nije naden!'}), 401
 
         if not user.check_password(password):
-            return jsonify({'password': 'Wrong password!'}), 401
+            return jsonify({'password': 'Kriva lozinka!'}), 401
 
         if not user.approved:
             return jsonify({'not_approved': True})
@@ -84,15 +84,15 @@ def register():
 
         user = User.query.filter_by(username=username).first()
         if user:
-            errors.append({"username": "Username already taken, please choose another."})
+            errors.append({"username": "Korisnicko ime zauzeto, odaberi drugo."})
         
-        if not username: errors.append({"username": "This field is required!"})
-        if not password: errors.append({"password": "This field is required!"})
-        if not email: errors.append({"email": "This field is required!"})
-        if not name: errors.append({"name": "This field is required!"})
-        if not surname: errors.append({"surname": "This field is required!"})
-        if not gender: errors.append({"gender": "This field is required!"})
-        if not birthdate: errors.append({"birthdate": "This field is required!"})
+        if not username: errors.append({"username": "Ne smije ostati prazno!"})
+        if not password: errors.append({"password": "Ne smije ostati prazno!"})
+        if not email: errors.append({"email": "Ne smije ostati prazno!"})
+        if not name: errors.append({"name": "Ne smije ostati prazno!"})
+        if not surname: errors.append({"surname": "Ne smije ostati prazno!"})
+        if not gender: errors.append({"gender": "Ne smije ostati prazno!"})
+        if not birthdate: errors.append({"birthdate": "Ne smije ostati prazno!"})
 
         if errors:
             return jsonify({"errors": errors}), 400
@@ -156,7 +156,28 @@ def logout():
 
 @app.route('/admin/dashboard')
 def admin_dashboard():
-    return render_template('admin/dashboard.html')
+
+    leagues = len(League.query.all())
+    users = len(User.query.filter_by(approved=True).all())
+    races = len(Race.query.all())
+
+    new_users = User.query.filter_by(approved=False).all()
+
+    league_names = [u"{} {}".format(league.name, league.year) for league in League.query.all()]
+    league_avg_racers = []
+
+    for league in League.query.all():
+        s = 0
+        cnt = 0
+        for race in league.races:
+            if race.start_time:
+                cnt += 1
+                s += len(race.race_results)
+
+        league_avg_racers.append(s / cnt if cnt else 0)
+
+    return render_template('admin/dashboard.html', leagues=leagues, users=users, races=races,
+                            new_users=new_users, league_names=league_names, league_avg_racers=league_avg_racers)
 
 
 @app.route('/admin/users')
@@ -286,6 +307,11 @@ def page_not_found(e):
 
 
 @app.template_filter('datetime')
-def _jinja2_filter_datetime(datetime, fmt=None):
+def _jinja2_filter_datetime(datetime):
     format='%d.%m.%Y %H:%M'
-    return datetime.strftime(format) 
+    return datetime.strftime(format)
+
+@app.template_filter('date')
+def _jinja2_filter_date(date):
+    format="%d-%m-%Y"
+    return date.strftime(format)

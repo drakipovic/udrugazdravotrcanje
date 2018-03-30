@@ -14,8 +14,98 @@
 
             </ol>
         </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-sm-4 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-aqua add-icon-padding"><i class="fa fa-users"></i></span>
+          
+                        <div class="info-box-content">
+                            <span class="info-box-text">Broj korisnika</span>
+                            <span class="info-box-number">{{users}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green add-icon-padding"><i class="fa fa-trophy"></i></span>
+        
+                        <div class="info-box-content">
+                            <span class="info-box-text">Broj liga</span>
+                            <span class="info-box-number">{{leagues}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-red add-icon-padding"><i class="fa fa-road"></i></span>
+            
+                        <div class="info-box-content">
+                            <span class="info-box-text">Broj utrka</span>
+                            <span class="info-box-number">{{races}}</span>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="col-sm-5 col-xs-12">
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Nepotvrđeni korisnici</h3>
+                        </div>
+                        <div class="box-body no-padding">
+                            <ul class="users-list clearfix">
+                                {% for user in new_users %}
+                                    <li>
+                                        <img src="{{user.avatar_url}}" height="100" width="100" alt="User Image">
+                                        <a class="users-list-name" href="/profile/{{user.username}}">{{user.full_name}}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="box-footer text-center">
+                            <a href="/admin/users" class="uppercase">Potvrdi korisnike</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-7 hidden-xs">
+                    <div class="box box-danger">
+                        <div class="chart" style="display: block">
+                            <canvas id="lineChart" style="height: 200px"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
+{% endblock %}
 
+{% block page_js %}
 
+    <script>
+        var config = {
+            type: 'line',
+            options: {
+                title: {
+                    display: true,
+                    text: "Prosječan broj trkača po ligi"
+                },
+                responsive: true,
+            },
+            data: {
+                labels: [{% for name in league_names %} "{{name}}", {% endfor %}],
+                datasets: [
+                    {
+                        label: 'Prosječan broj trkača',
+                        borderColor: '#00a65a',
+                        backgroundColor: '#00a65a',
+                        data: {{league_avg_racers}},
+                        fill: false
+                    },
+                ]
+            }
+        };
+
+        var lineChartCanvas = $('#lineChart').get(0).getContext('2d');
+        var lineChart = new Chart(lineChartCanvas, config);
+    </script>
 {% endblock %}

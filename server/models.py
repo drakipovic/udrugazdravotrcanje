@@ -51,7 +51,7 @@ class User(db.Model):
 
     def __init__(self, username, password, email=None, name=None, surname=None, gender=None, birthdate=None, role='user', approved=False):
         self.username = username
-        self.password_hash = self._set_password(password)
+        self.password_hash = self.set_password(password)
         self.email = email
         self.name = name
         self.surname = surname
@@ -78,7 +78,7 @@ class User(db.Model):
     def __hash__(self):
         return hash(self.user_id)
         
-    def _set_password(self, password):
+    def set_password(self, password):
         return generate_password_hash(password)
 
     def check_password(self, password):

@@ -206,7 +206,43 @@ class ApproveUserEndpoint(Resource):
 
 class UsersEndpoint(Resource):
 
+    @auth.login_required
     def get(self):
         users = [dict(user) for user in User.query.all()]
 
         return jsonify(users)
+
+
+class UserEndpoint(Resource):
+
+    @auth.login_required
+    def put(self, user_id):
+        user = User.query.get(user_id)
+
+        errors = []
+        old_password = request.json.get('old-password')
+
+        if old_password and not user.check_password(old_password):
+            errors.append({"old-password": "Kriva lozinka!"})
+
+        password = request.json.get('password')
+        email = request.json.get('email')
+        birthdate = request.json.get('birthdate')
+
+        if not email: errors.append({"email": "Ne smije ostati prazno!"})
+        if not birthdate: errors.append({"birthdate": "Ne smije ostati prazno!"})
+
+        if errors:
+            return {"errors": errors}, 400
+
+        birthdate = datetime.strptime(birthdate, "%d-%m-%Y")
+
+        user.email = email
+        user.birthdate = birthdate
+        
+        if password:
+            user.password_hash = user.set_password(password)
+
+        user.save()
+
+        return jsonify({"user": dict(user)})

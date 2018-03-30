@@ -35,7 +35,7 @@
                                         <table id="usersTable" class="table table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th>Username</th>
+                                                    <th>Korisničko ime</th>
                                                     <th>Ime</th>
                                                     <th>Email</th>
                                                     <th>Spol</th>
@@ -48,10 +48,10 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="tab_2">
-                                <table class="table table-bordered">
+                                <table class="table table-bordered table-responsive">
                                     <thead>
                                         <tr>
-                                            <th>Username</th>
+                                            <th>Korisničko ime</th>
                                             <th>Ime</th>
                                             <th>Email</th>
                                             <th>Spol</th>
@@ -82,6 +82,7 @@
     <script>
         $(function () {
             var table = $('#usersTable').DataTable({
+                'responsive': true,
                 'ordering': false,
                 'ajax': {
                     'url': '/api/users/not-approved',

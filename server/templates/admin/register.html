@@ -37,17 +37,17 @@
 
     <form>
       <div id="username-group" class="form-group has-feedback">
-        <input type="text" class="form-control" id="username" placeholder="Username">
+        <input type="text" class="form-control" id="username" placeholder="Korisničke ime">
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
         <span id="username-error" class="help-block username-error"></span>
       </div>
       <div id="password-group" class="form-group has-feedback">
-        <input type="password" class="form-control" id="password" placeholder="Password">
+        <input type="password" class="form-control" id="password" placeholder="Lozinka">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
         <span id="password-error" class="help-block"></span>
       </div>
       <div id="password-again-group" class="form-group has-feedback">
-        <input type="password" class="form-control" id="password-again" placeholder="Type password again">
+        <input type="password" class="form-control" id="password-again" placeholder="Potvrdi lozinku">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
         <span id="password-again-error" class="help-block"></span>
       </div>
@@ -78,7 +78,7 @@
       <div id="birthdate-group" class="form-group has-feedback">
         <div class="input-group">
             
-            <input type="text" id="birthdate" class="form-control" placeholder="Birthdate" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+            <input type="text" id="birthdate" class="form-control" placeholder="Datum rodenja" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
             <div class="input-group-addon">
               <i class="fa fa-calendar"></i>
           </div>
@@ -119,8 +119,6 @@
         var surname = $("#surname").val();
         var gender = $("#gender").val();
         var birthdate = $("#birthdate").val();
-
-        console.log(username, password, passwordAgain, email, name, surname, gender, birthdate);
 
         if(password != passwordAgain){
           $("#password-again-error").text('Passwords must match!');
