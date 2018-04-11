@@ -311,7 +311,14 @@ def _jinja2_filter_datetime(datetime):
     format='%d.%m.%Y %H:%M'
     return datetime.strftime(format)
 
+
 @app.template_filter('date')
 def _jinja2_filter_date(date):
     format="%d-%m-%Y"
     return date.strftime(format)
+
+@app.errorhandler(Exception)
+def exception_handler(e):
+    app.logger.info("Something went wrong, {}".format(str(e)))
+
+    return render_template('500.html'), 500

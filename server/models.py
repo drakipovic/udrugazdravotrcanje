@@ -3,8 +3,9 @@ from random import randint
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.types import TypeDecorator, Unicode, UnicodeText
+from sqlalchemy.exc import SQLAlchemyError
 
-from main import db
+from main import db, app
 from calculate_race_points import RacePoints
 
 
@@ -32,7 +33,28 @@ class CoerceUTF8Text(TypeDecorator):
         return value
 
 
-class User(db.Model):
+class BaseModel(db.Model):
+    __abstract__ = True
+
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except SQLAlchemyError as e:
+            app.logger.info("Failed saving object {} to db, error: {}".format(dict(self), str(e)))
+            db.session.rollback()
+
+    def delete(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except SQLAlchemyError as e:
+            app.logger.info("Failed deleting object {} to db, error: {}".format(dict(self), str(e)))
+            db.session.rollback()
+
+
+class User(BaseModel):
+    __abstract__ = False
     __tablename__ = 'users'
 
     user_id = db.Column(db.Integer, primary_key=True)
@@ -59,7 +81,7 @@ class User(db.Model):
         self.birthdate = birthdate
         self.role = role
         self.approved = approved
-        self.avatar_url = '/static/img/profile/{}/{}.png'.format(self.gender, randint(0, 2)) 
+        self.avatar_url = '/static/img/profile/{}/{}.png'.format(self.gender, randint(0, 2))
 
     def __iter__(self):
         yield 'id', self.user_id
@@ -97,17 +119,9 @@ class User(db.Model):
             return u"{} {}".format(self.name, self.surname)
         
         return ""
-    
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
 
-class League(db.Model):
+class League(BaseModel):
     __tablename__ = 'leagues'
 
     league_id = db.Column(db.Integer, primary_key=True)
@@ -135,17 +149,9 @@ class League(db.Model):
         yield 'name', self.name
         yield 'rounds', self.rounds
         yield 'created_by', self.created_by.username
-    
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
 
-class Race(db.Model):
+class Race(BaseModel):
     __tablename__ = 'races'
 
     race_id = db.Column(db.Integer, primary_key=True)
@@ -170,16 +176,8 @@ class Race(db.Model):
         yield 'finished', self.finished
         yield 'start_time', datetime.strftime(self.start_time, "%d/%m/%Y %H:%M") if self.start_time else False
 
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
 
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-
-class RaceCategory(db.Model):
+class RaceCategory(BaseModel):
     __tablename__ = 'categories'
 
     category_id = db.Column(db.Integer, primary_key=True)
@@ -194,16 +192,8 @@ class RaceCategory(db.Model):
         yield 'id', self.category_id
         yield 'length', self.race_length
     
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
 
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-
-class RaceResult(db.Model):
+class RaceResult(BaseModel):
     __tablename__ = 'results'
 
     race_result_id = db.Column(db.Integer, primary_key=True)
@@ -251,11 +241,3 @@ class RaceResult(db.Model):
             return True
         
         return True
-        
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
