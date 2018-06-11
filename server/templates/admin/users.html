@@ -24,6 +24,7 @@
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab_1" data-toggle="tab">Potvrdi</a></li>
                             <li><a href="#tab_2" data-toggle="tab">Korisnici</a></li>
+                            <li><a href="#tab_3" data-toggle="tab">Spoji korisnike</a></li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tab_1">
@@ -71,7 +72,33 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="tab-pane" id="tab_3">
+                                <div class="text-info">*Ovo se koristi kada se registrira novi korisnik, a kojeg smo ubacili u sustav prije jer se utrkivao pa da ne bi imali vise istih korisnika te kako bi ti korisnici mogli vidjeti sve svoje stare rezultate.</div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <select class="form-control">
+                                            {% for user in users %}
+                                                <option value="{{user.user_id}}">{{user.full_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select class="form-control">
+                                            {% for user in users %}
+                                                <option value="{{user.user_id}}">{{user.full_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="text-center">
+                                    <button class="btn btn-success btn-flat">Spoji korisnike</button>
+                                </div>
+
+                            </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </section>
