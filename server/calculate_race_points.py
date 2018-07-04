@@ -14,7 +14,6 @@ class RacePoints(object):
             return yaml.load(f)
 
     def calculate(self, user, race_result, race):
-
         start_time = race.start_time
         age = (start_time.date() - user.birthdate).days / 365
 

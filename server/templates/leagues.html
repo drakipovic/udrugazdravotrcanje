@@ -20,6 +20,7 @@
                 
                 <div class="box-group" id="accordion">
                     {% for league in leagues %}
+                        {% set league_races = league.races|sort(attribute='league_round') %}
                         <div class="panel box box-success">
                             <div class="box-header with-border">
                                 <h4 class="box-title">
@@ -45,14 +46,14 @@
                                                 <p class="text-muted"><a href="/leagues/{{league.league_id}}">{{league.name}} {{league.year}}</a></p>
                                                 <strong><i class="fa fa-calendar margin-r-5"></i> Datum prve i zadnje utrke</strong>
                                                 <p class="text-muted">
-                                                    {% if league.races[0].start_time %} 
-                                                        {{league.races[0].start_time|datetime}} - 
+                                                    {% if league_races[0].start_time %} 
+                                                        {{league_races[0].start_time|datetime}} - 
                                                     {% else %}
                                                         Nije postavljeno - 
                                                     {% endif %}
 
-                                                    {% if league.races[-1].start_time %} 
-                                                        {{league.races[-1].start_time|datetime}}
+                                                    {% if league_races[-1].start_time %} 
+                                                        {{league_races[-1].start_time|datetime}}
                                                     {% else %}
                                                         Nije postavljeno
                                                     {% endif %}
@@ -104,7 +105,7 @@
                         label: 'Broj trkača',
                         borderColor: '#00a65a',
                         backgroundColor: '#00a65a',
-                        data: [{% for race in league.races %} {{race.race_results|length}}, {% endfor %}],
+                        data: [{% for race in league.races|sort(attribute='league_round') %} {{race.race_results|length}}, {% endfor %}],
                         fill: false
                     },
                 ]
