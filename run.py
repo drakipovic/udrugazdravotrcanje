@@ -15,6 +15,7 @@ api.add_resource(ApproveUserEndpoint, '/users/<username>/approve')
 api.add_resource(LeagueEndpoint, '/leagues/<league_id>')
 api.add_resource(UsersEndpoint, '/users')
 api.add_resource(UserEndpoint, '/users/<user_id>')
+api.add_resource(LeagueResultsEndpoint, '/leagues/<league_id>/results')
 
 
 if __name__ == '__main__':
