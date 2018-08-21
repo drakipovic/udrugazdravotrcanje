@@ -37,40 +37,45 @@
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_1">
-                                        <div class="table-responsive no-padding">
-                                            <table class="table table-striped">
+                                        <form class="form">
+                                            <div class="row">
+                                                <div class="form-group col-xs-6 col-sm-offset-4 col-sm-2">
+                                                    <select id="age-filter" class="form-control">
+                                                        <option value="default" selected disabled>Kategorije po godinama</option>
+                                                        <option value="0-19">0-19</option>
+                                                        <option value="20-29">20-29</option>
+                                                        <option value="30-39">30-39</option>
+                                                        <option value="40-49">40-49</option>
+                                                        <option value="50-59">50-59</option>
+                                                        <option value="60-69">60-69</option>
+                                                        <option value="70-79">70-79</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-xs-6 col-sm-1">
+                                                    <select id="gender-filter" class="form-control">
+                                                        <option value="default" selected disabled>Spol</option>
+                                                        <option value="M">Muški</option>
+                                                        <option value="F">Žene</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-1">
+                                                    <button onclick="filter(event)" type="button" class="btn btn-success btn-flat">Filtriraj</button>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-1">
+                                                    <button onclick="removeFilter(event)" type="button" class="btn btn-warning btn-flat">Poništi filter</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <table id="leagueResultsTable" class="table table-bordered table-responsive">
+                                            <thead>
                                                 <tr>
                                                     <th>Pozicija</th>
                                                     <th>Ime</th>
-                                                    <th>Otrčanih utrka</th>
+                                                    <th>Utrka otrčanih</th>
                                                     <th>Bodovi</th>
                                                 </tr>
-                                                {% if league_points %}
-                                                    <tr style="background: #99dc82; color: black">
-                                                        <td>1</td>
-                                                        <td>
-                                                            <a href="/profile/{{league_points[0][1].user.username}}">
-                                                                {{league_points[0][1].user.full_name}}
-                                                            </a>
-                                                        </td>
-                                                        <td>{{league_points[0][1].races}}</td>
-                                                        <td>{{league_points[0][1].points}}</td>
-                                                    </tr>
-                                                {% endif %}
-                                                {% for user_points in league_points[1:] %}
-                                                    <tr>
-                                                        <td>{{loop.index+1}}</td>
-                                                        <td>
-                                                            <a href="/profile/{{user_points[1].user.username}}">
-                                                                {{user_points[1].user.full_name}}
-                                                            </a>
-                                                        </td>
-                                                        <td>{{user_points[1].races}}</td>
-                                                        <td>{{user_points[1].points}}</td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </table>
-                                        </div>
+                                            </thead>
+                                        </table>
                                     </div>
                                     <div class="tab-pane" id="tab_2">
                                         <div class="table-responsive no-padding">
@@ -107,4 +112,67 @@
             </div>
         </section>
     </div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+    $(function () {
+        $('#leagueResultsTable').DataTable({
+            'dom': 'Bfrtip',
+            'responsive': true,
+            'ajax': {
+                'url': '/api/leagues/{{league.league_id}}/results',
+                'cache': true,
+                'dataSrc': '',
+                "beforeSend": function(xhr){
+                    xhr.setRequestHeader("Authorization",
+                       "Basic " + btoa(localStorage.getItem('username') + ":" + localStorage.getItem('password')));
+                 }
+            },
+            'columns': [
+                {"data": "position", "orderable": false},
+                {"data": "user.full_name", "orderable": false},
+                {"data": "races", "orderable": false},
+                {"data": "points", render: $.fn.dataTable.render.number( ',', '.', 2)},
+            ],
+            "createdRow": function( row, data, dataIndex){
+                if( dataIndex == 0){
+                    $(row).addClass('first-place');
+                }
+
+                if( dataIndex == 1){
+                    $(row).addClass('second-place');
+                }
+
+                if( dataIndex == 2){
+                    $(row).addClass('third-place');
+                }
+            }
+        });
+    });
+</script>
+<script>
+        function filter(event){
+            event.preventDefault();
+            
+            var gender = $("#gender-filter").val();
+            var age = $("#age-filter").val();
+
+            if(!gender && !age) return;
+
+            $('#leagueResultsTable').DataTable().ajax.url('/api/leagues/{{league.league_id}}/results?gender=' + gender + '&age=' + age);
+            $('#leagueResultsTable').DataTable().ajax.reload()
+        }
+
+        function removeFilter(event){
+            event.preventDefault();
+
+            $("#gender-filter").val('default');
+            $("#age-filter").val('default');
+
+            $('#leagueResultsTable').DataTable().ajax.url('/api/leagues/{{league.league_id}}/results');
+            $('#leagueResultsTable').DataTable().ajax.reload()
+
+        }
+    </script>
 {% endblock %}

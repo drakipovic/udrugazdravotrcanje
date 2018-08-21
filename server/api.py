@@ -5,6 +5,7 @@ from flask import request, jsonify, g
 from flask_restful import Resource, reqparse
 
 from models import League, Race, RaceCategory, RaceResult, User
+from calculate_race_points import RacePoints
 from main import auth
 
 
@@ -101,13 +102,27 @@ class RaceResultsEndpoint(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('gender')
         parser.add_argument('category')
+        parser.add_argument('age')
         args = parser.parse_args()
 
         gender = args.get('gender')
         category = args.get('category')
+        age = args.get('age')
 
         if gender == 'null': gender = None
         if category == 'null': category = None
+        if age == 'null': age = None
+
+        if age and not gender and not category:
+            age_from, age_to = int(age.split('-')[0]), int(age.split('-')[1])
+
+            race_results = [
+                race_result for race_result in sorted(
+                    RaceResult.query.join(Race, RaceResult.race_id==race_id).join(User, User.user_id==RaceResult.user_id)
+                )  
+            ]
+
+            race_results = [dict(race_result)for race_result in race_results if age_from <= race_result.user.age <= age_to]
         
         if gender and category:
             race_results = [
@@ -130,7 +145,7 @@ class RaceResultsEndpoint(Resource):
                                     .filter(RaceResult.race_length==category).all())
             ]
 
-        else:
+        elif not category and not age and not gender:
             race_results = [dict(race_result) for race_result in sorted(Race.query.get(race_id).race_results)]
         
         for i, race_result in enumerate(race_results):
@@ -246,3 +261,62 @@ class UserEndpoint(Resource):
         user.save()
 
         return jsonify({"user": dict(user)})
+
+
+class LeagueResultsEndpoint(Resource):
+
+    @auth.login_required
+    def get(self, league_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('gender')
+        parser.add_argument('age')
+        args = parser.parse_args()
+
+        gender = args.get('gender')
+        age = args.get('age')
+
+        if gender == 'null': gender = None
+        if age == 'null': age = None
+        
+        league = League.query.get(league_id)
+
+        league_points = {}
+        rp = RacePoints()
+
+        for race in sorted(league.races, key=lambda x: x.race_id):
+            if race.start_time:
+                for result in race.race_results:
+                    if result.race_time:
+                        user = User.query.get(result.user_id)
+                        if not user.birthdate:
+                            continue
+                            
+                        if league_points.get(result.user_id, None):
+                            league_points[result.user_id]['points'] += rp.calculate(user, result, race)
+                            league_points[result.user_id]['races'] += 1
+                        else:
+                            league_points[result.user_id] = {}
+                            league_points[result.user_id]['points'] = rp.calculate(user, result, race)
+                            league_points[result.user_id]['user'] = dict(user)
+                            league_points[result.user_id]['races'] = 1
+        
+        league_points = [user_points[1] for user_points in sorted(league_points.iteritems(), key=lambda (x, y): y['points'], reverse=True)]
+        
+        if age and not gender:
+            age_from, age_to = int(age.split('-')[0]), int(age.split('-')[1])
+            league_points = [user_points for user_points in league_points if age_from <= user_points['user']['age'] <= age_to]
+
+        if gender and not age:
+            league_points = [user_points for user_points in league_points if user_points['user']['gender'] == gender]
+
+        if age and gender:
+            age_from, age_to = int(age.split('-')[0]), int(age.split('-')[1])
+            league_points = [user_points for user_points in league_points if age_from <= user_points['user']['age'] <= age_to and user_points['user']['gender'] == gender]
+
+        pos = 1
+        for user in league_points:
+            user['position'] = pos
+            pos += 1
+
+
+        return jsonify(league_points)

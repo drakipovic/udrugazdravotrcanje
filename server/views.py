@@ -278,28 +278,7 @@ def league(league_id):
 
     done = sum([race.finished == True for race in sorted(league.races, key=lambda (x): x.race_id)])
 
-    league_points = {}
-    rp = RacePoints()
-
-    for race in sorted(league.races, key=lambda (x): x.race_id):
-        if race.start_time:
-            for result in race.race_results:
-                if result.race_time:
-                    user = User.query.get(result.user_id)
-                    if not user.birthdate:
-                        continue
-                        
-                    if league_points.get(result.user_id, None):
-                        league_points[result.user_id]['points'] += rp.calculate(user, result, race)
-                        league_points[result.user_id]['races'] += 1
-                    else:
-                        league_points[result.user_id] = {}
-                        league_points[result.user_id]['points'] = rp.calculate(user, result, race)
-                        league_points[result.user_id]['user'] = dict(user)
-                        league_points[result.user_id]['races'] = 1
-
-    return render_template('league.html', league=league, done=done, races=sorted(league.races, key=lambda (x): x.race_id),
-                            league_points=sorted(league_points.iteritems(), key=lambda (x, y): y['points'], reverse=True))
+    return render_template('league.html', league=league, done=done, races=sorted(league.races, key=lambda (x): x.race_id))
 
 
 @app.errorhandler(404)

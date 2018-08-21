@@ -4,6 +4,7 @@ from random import randint
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.types import TypeDecorator, Unicode, UnicodeText
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from main import db, app
 from calculate_race_points import RacePoints
@@ -106,10 +107,10 @@ class User(BaseModel):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    @property
+    @hybrid_property
     def age(self):
         if self.birthdate:
-            return (date.today() - self.birthdate).days / 365
+            return int((date.today() - self.birthdate).days / 365)
         
         return ""
     

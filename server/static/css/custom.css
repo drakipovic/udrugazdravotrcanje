@@ -78,3 +78,16 @@ th{
 .add-icon-padding{
     padding-top: 22px;
 }
+
+.first-place{
+    background: #6EEB83;
+    border-right: #6EEB83 1px solid;
+}
+
+.second-place{
+    background: #E4FF1A;
+}
+
+.third-place{
+    background: #1BE7FF;
+}
