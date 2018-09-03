@@ -95,3 +95,7 @@ th{
 .add-margin-top{
     margin-top: 20px;
 }
+
+.easy-autocomplete.eac-square input {
+    width: 500px;
+}

@@ -77,20 +77,20 @@
                                 <br/>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <select class="form-control" id="user-1-select" onchange="onFirstUserChange(this)">
-                                            <option value="default" selected disabled>Korisnik koji se spaja</option>
-                                            {% for user in users %}
-                                                <option value="{{user.user_id}}">{{user.full_name}}</option>
-                                            {% endfor %}
-                                        </select>
+                                        <form class="form">
+                                            <div class="form-group">
+                                                <label for="name-surname">Ime i prezime korisnika koji se spaja</label>
+                                                <input class="form-control" id="search-runners-1"/>
+                                            </div>
+                                        </form>
                                     </div>
                                     <div class="col-md-6">
-                                        <select class="form-control" id="user-2-select" onchange="onSecondUserChange(this)">
-                                            <option value="default" selected disabled>Korisnik u kojeg se spaja</option>
-                                            {% for user in users %}
-                                                <option value="{{user.user_id}}">{{user.full_name}}</option>
-                                            {% endfor %}
-                                        </select>
+                                        <form class="form">
+                                            <div class="form-group">
+                                                <label for="name-surname">Ime i prezime korisnika u kojeg se spaja</label>
+                                                <input class="form-control" id="search-runners-2"/>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                                 <div class="row add-margin-top">
@@ -253,49 +253,71 @@
         });
     </script>
     <script>
-
-        function onFirstUserChange(selected){
-            window.callApi({
-                method: 'GET',
-                url: '/api/users/' + selected.value,
-                success: function(data){
-                    data = data.user;
-                    $("#profile-name1").text(data.full_name);
-                    $("#profile-email1").text(data.email);
-                    $("#profile-birthdate1").text(data.birthdate);
-                    $("#profile-username1").text(data.username);
+        var registerUserOptions1 = {
+            url: '/api/users',
+            getValue: function(data){
+                return data.id + " " + data.full_name;
+            },
+            list: {
+                match: {
+                    enabled: true
+                },
+                maxNumberOfElements: 8,
+                onSelectItemEvent: function(){
+                    var user_data = $("#search-runners-1").getSelectedItemData();
+                    
+                    $("#profile-name1").text(user_data.full_name);
+                    $("#profile-email1").text(user_data.email);
+                    $("#profile-birthdate1").text(user_data.birthdate);
+                    $("#profile-username1").text(user_data.username);
                     $("#user-1").show();
+
+                    if ($("#search-runners-2").val()) {
+                        $("#preview-button").prop('disabled', false);
+                    }
                 }
-            });
+            },
+            placeholder: "Traži...",
+            theme: "square"
+        };
 
-            if ($("#user-2-select").val()) {
-                $("#preview-button").prop('disabled', false);
-            }
-
-        }
-
-        function onSecondUserChange(selected){
-            window.callApi({
-                method: 'GET',
-                url: '/api/users/' + selected.value,
-                success: function(data){
-                    data = data.user;
-                    $("#profile-name2").text(data.full_name);
-                    $("#profile-email2").text(data.email);
-                    $("#profile-birthdate2").text(data.birthdate);
-                    $("#profile-username2").text(data.username);
+        var registerUserOptions2 = {
+            url: '/api/users',
+            getValue: function(data){
+                return data.id + " " + data.full_name;
+            },
+            list: {
+                match: {
+                    enabled: true
+                },
+                maxNumberOfElements: 8,
+                onSelectItemEvent: function(){
+                    var user_data = $("#search-runners-2").getSelectedItemData();
+                    
+                    $("#profile-name2").text(user_data.full_name);
+                    $("#profile-email2").text(user_data.email);
+                    $("#profile-birthdate2").text(user_data.birthdate);
+                    $("#profile-username2").text(user_data.username);
                     $("#user-2").show();
-                }
-            });
 
-            if ($("#user-1-select").val()) {
-                $("#preview-button").prop('disabled', false);
-            }
-        }
+                    if ($("#search-runners-1").val()) {
+                        $("#preview-button").prop('disabled', false);
+                    }
+                }
+            },
+            placeholder: "Traži...",
+            theme: "square"
+        };
+
+        $("#search-runners-1").easyAutocomplete(registerUserOptions1);
+        $("#search-runners-2").easyAutocomplete(registerUserOptions2);
 
         function previewUser(){
-            var user_1 = $("#user-1-select").val();
-            var user_2 = $("#user-2-select").val();
+            var user_1 = $("#search-runners-1").val();
+            var user_2 = $("#search-runners-2").val();
+
+            user_1 = user_1.split(" ")[0];
+            user_2 = user_2.split(" ")[0];
 
             window.callApi({
                 method: 'GET',
@@ -327,8 +349,11 @@
         }
 
         function mergeUsers(){
-            var user_1 = $("#user-1-select").val();
-            var user_2 = $("#user-2-select").val();
+            var user_1 = $("#search-runners-1").val();
+            var user_2 = $("#search-runners-2").val();
+
+            user_1 = user_1.split(" ")[0];
+            user_2 = user_2.split(" ")[0];
 
             window.callApi({
                 method: 'POST',
