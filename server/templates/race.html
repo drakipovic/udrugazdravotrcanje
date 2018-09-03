@@ -205,7 +205,6 @@
                 method: "POST",
                 data: JSON.stringify(data),
                 success: function(data){
-                    console.log(data);
                     $("#register").hide();
                     $("#start-number").show();
                     $("#number").html(data['race_result']['start_number']);

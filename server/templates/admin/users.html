@@ -77,25 +77,121 @@
                                 <br/>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <select class="form-control">
+                                        <select class="form-control" id="user-1-select" onchange="onFirstUserChange(this)">
+                                            <option value="default" selected disabled>Korisnik koji se spaja</option>
                                             {% for user in users %}
                                                 <option value="{{user.user_id}}">{{user.full_name}}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                     <div class="col-md-6">
-                                        <select class="form-control">
+                                        <select class="form-control" id="user-2-select" onchange="onSecondUserChange(this)">
+                                            <option value="default" selected disabled>Korisnik u kojeg se spaja</option>
                                             {% for user in users %}
                                                 <option value="{{user.user_id}}">{{user.full_name}}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
+                                <div class="row add-margin-top">
+                                    <div id="user-1" class="col-sm-6" hidden>
+                                        <div class="box box-danger">
+                                            <div class="box-body box-profile">                              
+                                                <ul class="list-group list-group-unbordered">
+                                                    <li class="list-group-item">
+                                                        <b>Ime i prezime</b> <span id="profile-name1" class="pull-right"></span>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <b>Korisničko ime</b> <span id="profile-username1" class="pull-right"></span>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <b>Email</b> <span id="profile-email1" class="pull-right"></span>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <b>Rođendan</b> <span id="profile-birthdate1" class="pull-right"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="user-2" class="col-sm-6" hidden>
+                                        <div class="box box-danger">
+                                            <div class="box-body box-profile">                              
+                                                <ul class="list-group list-group-unbordered">
+                                                    <li class="list-group-item">
+                                                        <b>Ime i prezime</b> <span id="profile-name2" class="pull-right"></span>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <b>Korisničko ime</b> <span id="profile-username2" class="pull-right"></span>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <b>Email</b> <span id="profile-email2" class="pull-right"></span>
+                                                    </li>
+                                                    <li class="list-group-item">
+                                                        <b>Rođendan</b> <span id="profile-birthdate2" class="pull-right"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <br/>
                                 <div class="text-center">
-                                    <button class="btn btn-success btn-flat">Spoji korisnike</button>
+                                    <button class="btn btn-success btn-flat" onclick="previewUser()" data-toggle="modal" data-target="#preview" id="preview-button" disabled>Pregledaj</button>
                                 </div>
 
+                                <div class="modal fade" id="preview">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content" id="user-final" hidden>
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span></button>
+                                                <h4 class="modal-title">Pregled korisnika koji će nastati spajanjem</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="box box-danger">
+                                                    <div class="box-body box-profile">                              
+                                                        <ul class="list-group list-group-unbordered">
+                                                            <li class="list-group-item">
+                                                                <b>Ime i prezime</b> <span id="profile-name-final" class="pull-right"></span>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <b>Korisničko ime</b> <span id="profile-username-final" class="pull-right"></span>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <b>Email</b> <span id="profile-email-final" class="pull-right"></span>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <b>Rođendan</b> <span id="profile-birthdate-final" class="pull-right"></span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="add-margin-top">
+                                                        <table class="table table-bordered" id="results">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Pozicija</th>
+                                                                    <th>Ime i prezime</th>
+                                                                    <th>Vrijeme</th>
+                                                                    <th>Kategorija</th>
+                                                                    <th>Startni broj</th>
+                                                                    <th>Bodovi</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="results-body">
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Zatvori</button>
+                                                <button type="button" class="btn btn-primary" onclick="mergeUsers()">Spoji korisnike</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -155,5 +251,92 @@
                 })
             } );
         });
+    </script>
+    <script>
+
+        function onFirstUserChange(selected){
+            window.callApi({
+                method: 'GET',
+                url: '/api/users/' + selected.value,
+                success: function(data){
+                    data = data.user;
+                    $("#profile-name1").text(data.full_name);
+                    $("#profile-email1").text(data.email);
+                    $("#profile-birthdate1").text(data.birthdate);
+                    $("#profile-username1").text(data.username);
+                    $("#user-1").show();
+                }
+            });
+
+            if ($("#user-2-select").val()) {
+                $("#preview-button").prop('disabled', false);
+            }
+
+        }
+
+        function onSecondUserChange(selected){
+            window.callApi({
+                method: 'GET',
+                url: '/api/users/' + selected.value,
+                success: function(data){
+                    data = data.user;
+                    $("#profile-name2").text(data.full_name);
+                    $("#profile-email2").text(data.email);
+                    $("#profile-birthdate2").text(data.birthdate);
+                    $("#profile-username2").text(data.username);
+                    $("#user-2").show();
+                }
+            });
+
+            if ($("#user-1-select").val()) {
+                $("#preview-button").prop('disabled', false);
+            }
+        }
+
+        function previewUser(){
+            var user_1 = $("#user-1-select").val();
+            var user_2 = $("#user-2-select").val();
+
+            window.callApi({
+                method: 'GET',
+                url: '/api/users-merge/' + user_1 + "/" + user_2,
+                success: function(data){
+                    $("#profile-name-final").text(data.user.full_name);
+                    $("#profile-email-final").text(data.user.email);
+                    $("#profile-birthdate-final").text(data.user.birthdate);
+                    $("#profile-username-final").text(data.user.username);
+                    
+                    var html = '';
+
+                    for(var i = 0; i < data.race_results.length; ++i){
+                        var race_result = data.race_results[i];
+                        html += '<tr>';
+                        html += '<td>' + race_result.position + '</td>';
+                        html += '<td>' + race_result.full_name + '</td>';
+                        html += '<td>' + race_result.time + '</td>';
+                        html += '<td>' + race_result.race_length + '</td>';
+                        html += '<td>' + race_result.time + '</td>';
+                        html += '<td>' + race_result.points + '</td>';
+                        html += '</tr>';
+                    }
+                    $("#results-body").html(html);
+
+                    $("#user-final").show();
+                }
+            });
+        }
+
+        function mergeUsers(){
+            var user_1 = $("#user-1-select").val();
+            var user_2 = $("#user-2-select").val();
+
+            window.callApi({
+                method: 'POST',
+                url: '/api/users-merge/' + user_1 + "/" + user_2,
+                success: function(data){
+                    if(data.success) location.reload();
+                }
+            });
+        }   
     </script>
 {% endblock %}

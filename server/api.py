@@ -223,12 +223,18 @@ class UsersEndpoint(Resource):
 
     @auth.login_required
     def get(self):
-        users = [dict(user) for user in User.query.all()]
+        users = [dict(user) for user in User.query.filter_by(approved=True).all()]
 
         return jsonify(users)
 
 
 class UserEndpoint(Resource):
+
+    @auth.login_required
+    def get(self, user_id):
+        user = User.query.get(user_id)
+
+        return jsonify({"user": dict(user)})
 
     @auth.login_required
     def put(self, user_id):
@@ -320,3 +326,45 @@ class LeagueResultsEndpoint(Resource):
 
 
         return jsonify(league_points)
+
+
+class UsersMergeEndpoint(Resource):
+
+    def get(self, user_id_1, user_id_2):
+        user_1 = User.query.get(user_id_1)
+        user_2 = User.query.get(user_id_2)
+
+        race_results_1 = user_1.race_results
+        race_results_2 = user_2.race_results
+        
+        merged = []
+        merged.extend(race_results_1)
+        merged.extend(race_results_2)
+
+        for race_result in merged:
+            race_result.user_id = user_id_2
+        
+        race_results = [dict(race_result) for race_result in merged]
+
+        return jsonify({"user": dict(user_2), "race_results": race_results})
+
+    def post(self, user_id_1, user_id_2):
+        user_1 = User.query.get(user_id_1)
+        user_2 = User.query.get(user_id_2)
+
+        race_results_1 = user_1.race_results
+        race_results_2 = user_2.race_results
+        
+        merged = []
+        merged.extend(race_results_1)
+        merged.extend(race_results_2)
+
+        for race_result in merged:
+            race_result.user_id = user_id_2
+
+        user_2.race_results = merged
+        user_2.save()
+
+        user_1.delete()
+        
+        return jsonify({"success": True})

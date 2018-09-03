@@ -16,7 +16,7 @@ api.add_resource(LeagueEndpoint, '/leagues/<league_id>')
 api.add_resource(UsersEndpoint, '/users')
 api.add_resource(UserEndpoint, '/users/<user_id>')
 api.add_resource(LeagueResultsEndpoint, '/leagues/<league_id>/results')
-
+api.add_resource(UsersMergeEndpoint, '/users-merge/<user_id_1>/<user_id_2>')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
