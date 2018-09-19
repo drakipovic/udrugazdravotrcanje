@@ -131,7 +131,11 @@
             },
             'columns': [
                 {"data": "position", "orderable": false},
-                {"data": "user.full_name", "orderable": false},
+                {"data": "user.full_name", "orderable": false,
+                    "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                        $(nTd).html("<a href=/profile/" + oData.user.username +">"+oData.user.full_name+"</a>");
+                    }
+                },
                 {"data": "races", "orderable": false},
                 {"data": "points", render: $.fn.dataTable.render.number( ',', '.', 2)},
             ],

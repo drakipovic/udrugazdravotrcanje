@@ -15,6 +15,9 @@ class RacePoints(object):
 
     def calculate(self, user, race_result, race):
         start_time = race.start_time
+        
+        if not user.birthdate or not user.gender: return 0
+        
         age = (start_time.date() - user.birthdate).days / 365
 
         gender = user.gender
@@ -22,7 +25,6 @@ class RacePoints(object):
         race_time = race_result.race_time
 
         predefined_time = self.handicaps.get('time').get(race_length)
-
         gender_handicaps = self.handicaps.get(gender)
 
         percentage = gender_handicaps.get(age, None)

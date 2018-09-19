@@ -295,4 +295,7 @@ def _jinja2_filter_datetime(datetime):
 @app.template_filter('date')
 def _jinja2_filter_date(date):
     format="%d-%m-%Y"
-    return date.strftime(format)
+    if date:
+        return date.strftime(format)
+    else:
+        return ""
